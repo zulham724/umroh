@@ -1,7 +1,7 @@
 @extends('layouts.bookify')
 
 @section('css')
-
+<style type="text/css"></style>
 @endsection
 
 @section('content')
