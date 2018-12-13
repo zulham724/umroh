@@ -6,57 +6,25 @@
 
 @section('content')
 <div class="owl-carousel owl-carousel-no-nav smoothscroll" data-items="1" data-loop="true" data-nav="true" data-autoplay="3000" id="home">
-  <div class="theme-hero-area _h-75vh">
-    <div class="theme-hero-area-bg-wrap">
-      <div class="theme-hero-area-bg" style="background-image:url({{ asset('bookify/img/lvjzhhoijj4_1500x800.jpg') }});"></div>
-      <div class="theme-hero-area-mask theme-hero-area-mask-strong"></div>
-    </div>
-    <div class="theme-hero-area-body theme-hero-area-body-vert-center">
-      <div class="container">
-        <div class="theme-hero-text _pt-50 theme-hero-text-center theme-hero-text-white">
-          <div class="theme-hero-text-header">
-            <h2 class="theme-hero-text-title _mb-10 theme-hero-text-title-xl">Moscow</h2>
-            <p class="theme-hero-text-subtitle">Illuminating reflections</p>
+  @foreach ($sliders as $slider)  
+    <div class="theme-hero-area _h-75vh">
+      <div class="theme-hero-area-bg-wrap">
+        <div class="theme-hero-area-bg" style="background-image:url({{ asset($slider->image_url) }});"></div>
+        <div class="theme-hero-area-mask theme-hero-area-mask-strong"></div>
+      </div>
+      <div class="theme-hero-area-body theme-hero-area-body-vert-center">
+        <div class="container">
+          <div class="theme-hero-text _pt-50 theme-hero-text-center theme-hero-text-white">
+            <div class="theme-hero-text-header">
+              <h2 class="theme-hero-text-title _mb-10 theme-hero-text-title-xl">{{ $slider->name }}</h2>
+              <p class="theme-hero-text-subtitle">{{ $slider->description }}</p>
+            </div>
+            <a class="btn _tt-uc _mt-20 btn-white btn-ghost btn-lg" href="#pricing">See More</a>
           </div>
-          <a class="btn _tt-uc _mt-20 btn-white btn-ghost btn-lg" href="#destination">See More</a>
         </div>
       </div>
     </div>
-  </div>
-  <div class="theme-hero-area _h-75vh">
-    <div class="theme-hero-area-bg-wrap">
-      <div class="theme-hero-area-bg" style="background-image:url({{ asset('bookify/img/city-landmark-lights-night_1500x800.jpg') }});"></div>
-      <div class="theme-hero-area-mask theme-hero-area-mask-strong"></div>
-    </div>
-    <div class="theme-hero-area-body theme-hero-area-body-vert-center">
-      <div class="container">
-        <div class="theme-hero-text _pt-50 theme-hero-text-center theme-hero-text-white">
-          <div class="theme-hero-text-header">
-            <h2 class="theme-hero-text-title _mb-10 theme-hero-text-title-xl">New York</h2>
-            <p class="theme-hero-text-subtitle">Welcome to big apple</p>
-          </div>
-          <a class="btn _tt-uc _mt-20 btn-white btn-ghost btn-lg" href="#destination">See More</a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="theme-hero-area _h-75vh">
-    <div class="theme-hero-area-bg-wrap">
-      <div class="theme-hero-area-bg" style="background-image:url({{ asset('bookify/img/architecture-asia-asian-blur-236148_1500x800.jpg') }});"></div>
-      <div class="theme-hero-area-mask theme-hero-area-mask-strong"></div>
-    </div>
-    <div class="theme-hero-area-body theme-hero-area-body-vert-center">
-      <div class="container">
-        <div class="theme-hero-text _pt-50 theme-hero-text-center theme-hero-text-white">
-          <div class="theme-hero-text-header">
-            <h2 class="theme-hero-text-title _mb-10 theme-hero-text-title-xl">Kyoto</h2>
-            <p class="theme-hero-text-subtitle">The spirit of mystery</p>
-          </div>
-          <a class="btn _tt-uc _mt-20 btn-white btn-ghost btn-lg" href="#destination">See More</a>
-        </div>
-      </div>
-    </div>
-  </div>
+  @endforeach
 </div>
 <div class="theme-page-section theme-page-section-gray">
   <div class="container">

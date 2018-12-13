@@ -5,15 +5,15 @@ namespace App\Http\Controllers\Admin;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 
 // VALIDATION: change the requests to match your own file names if you need form validation
-use App\Http\Requests\PlanFeatureRequest as StoreRequest;
-use App\Http\Requests\PlanFeatureRequest as UpdateRequest;
+use App\Http\Requests\SliderRequest as StoreRequest;
+use App\Http\Requests\SliderRequest as UpdateRequest;
 
 /**
- * Class PlanFeatureCrudController
+ * Class SliderCrudController
  * @package App\Http\Controllers\Admin
  * @property-read CrudPanel $crud
  */
-class PlanFeatureCrudController extends CrudController
+class SliderCrudController extends CrudController
 {
     public function setup()
     {
@@ -22,37 +22,41 @@ class PlanFeatureCrudController extends CrudController
         | CrudPanel Basic Information
         |--------------------------------------------------------------------------
         */
-        $this->crud->setModel('App\Models\PlanFeature');
-        $this->crud->setRoute(config('backpack.base.route_prefix') . '/planfeature');
-        $this->crud->setEntityNameStrings('planfeature', 'plan_features');
+        $this->crud->setModel('App\Models\Slider');
+        $this->crud->setRoute(config('backpack.base.route_prefix') . '/slider');
+        $this->crud->setEntityNameStrings('slider', 'sliders');
 
         /*
         |--------------------------------------------------------------------------
         | CrudPanel Configuration
         |--------------------------------------------------------------------------
         */
-        $this->crud->addColumn([  // Select
-           'label' => "Plan",
-           'type' => 'select',
-           'name' => 'plan_id', // the db column for the foreign key
-           'entity' => 'plan', // the method that defines the relationship in your Model
-           'attribute' => 'name', // foreign key attribute that is shown to user
-           'model' => "App\Models\Plan" // foreign key model
-        ]);
+        $this->crud->addColumn([
+                                'name' => 'name',
+                                'label' => 'Label',
+                            ]);
+        $this->crud->addColumn([
+                                'name' => 'image_url',
+                                'label' => 'Image',
+                                'type' => 'image'
+                            ]);
 
-        $this->crud->addField([  // Select
-           'label' => "Plan",
-           'type' => 'select',
-           'name' => 'plan_id', // the db column for the foreign key
-           'entity' => 'plan', // the method that defines the relationship in your Model
-           'attribute' => 'name', // foreign key attribute that is shown to user
-           'model' => "App\Models\Plan" // foreign key model
-        ]);
-
+        $this->crud->addField([
+                                'name' => 'name',
+                                'label' => 'Label',
+                            ]);
+        $this->crud->addField([
+                                'name' => 'image_url',
+                                'label' => 'Image Url',
+                                'type' => 'image',
+                                'upload' => true,
+                                'crop' => true, // set to true to allow cropping, false to disable
+                                'aspect_ratio' => 2,
+                            ]);
         // TODO: remove setFromDb() and manually define Fields and Columns
         $this->crud->setFromDb();
 
-        // add asterisk for fields that are required in PlanFeatureRequest
+        // add asterisk for fields that are required in SliderRequest
         $this->crud->setRequiredFields(StoreRequest::class, 'create');
         $this->crud->setRequiredFields(UpdateRequest::class, 'edit');
     }

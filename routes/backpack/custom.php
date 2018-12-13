@@ -18,4 +18,5 @@ Route::group([
     CRUD::resource('order', 'OrderCrudController');
     CRUD::resource('voucher', 'VoucherCrudController');
     CRUD::resource('planhasvoucher', 'PlanHasVoucherCrudController');
+    CRUD::resource('slider', 'SliderCrudController');
 }); // this should be the absolute last line of this file

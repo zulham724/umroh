@@ -10,26 +10,27 @@
 	</ul>
 </li>
 <li class="treeview">
-	<a href="#"><i class="fa fa-shopping-cart"></i> <span>Store</span> <i class="fa fa-angle-left pull-right"></i></a>
+	<a href="#"><i class="fa fa-opencart"></i> <span>Store</span> <i class="fa fa-angle-left pull-right"></i></a>
 	<ul class="treeview-menu"> 
-		<li><a href='{{ backpack_url('order') }}'><i class='fa fa-tag'></i> <span>Orders</span></a></li>
-		<li><a href='{{ backpack_url('person') }}'><i class='fa fa-tag'></i> <span>Persons</span></a></li>
-		<li><a href='{{ backpack_url('voucher') }}'><i class='fa fa-tag'></i> <span>Vouchers</span></a></li>
-		<li><a href='{{ backpack_url('payment') }}'><i class='fa fa-tag'></i> <span>Payments</span></a></li>
+		<li><a href='{{ backpack_url('order') }}'><i class='fa fa-shopping-cart'></i> <span>Orders</span></a></li>
+		<li><a href='{{ backpack_url('person') }}'><i class='fa fa-user-secret'></i> <span>Persons</span></a></li>
+		<li><a href='{{ backpack_url('voucher') }}'><i class='fa fa-vcard'></i> <span>Vouchers</span></a></li>
+		<li><a href='{{ backpack_url('payment') }}'><i class='fa fa-cc-mastercard'></i> <span>Payments</span></a></li>
 	</ul>
 </li>
 <li class="treeview">
 	<a href="#"><i class="fa fa-shopping-bag"></i> <span>Packages</span> <i class="fa fa-angle-left pull-right"></i></a>
 	<ul class="treeview-menu"> 
-		<li><a href='{{ backpack_url('plan') }}'><i class='fa fa-tag'></i> <span>Plans</span></a></li>
-		<li><a href='{{ backpack_url('planfeature') }}'><i class='fa fa-tag'></i> <span>Plan Features</span></a></li>
+		<li><a href='{{ backpack_url('plan') }}'><i class='fa fa-ticket'></i> <span>Plans</span></a></li>
+		<li><a href='{{ backpack_url('planfeature') }}'><i class='fa fa-puzzle-piece'></i> <span>Plan Features</span></a></li>
 	</ul>
 </li>
 <li class="treeview">
-	<a href="#"><i class="fa fa-group"></i> <span>Layout</span> <i class="fa fa-angle-left pull-right"></i></a>
+	<a href="#"><i class="fa fa-object-group"></i> <span>Layout</span> <i class="fa fa-angle-left pull-right"></i></a>
 	<ul class="treeview-menu">
 		<li><a href="{{backpack_url('page') }}"><i class="fa fa-file-o"></i> <span>Pages</span></a></li>
 		<li><a href="{{ backpack_url('menu-item') }}"><i class="fa fa-list"></i> <span>Menu</span></a></li>
+		<li><a href='{{ backpack_url('slider') }}'><i class='fa fa-slideshare'></i> <span>Sliders</span></a></li>
 	</ul>
 </li>
 <li class="treeview">
