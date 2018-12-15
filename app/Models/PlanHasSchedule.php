@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\CrudTrait;
 
-class Plan extends Model
+class PlanHasSchedule extends Model
 {
     use CrudTrait;
 
@@ -15,11 +15,11 @@ class Plan extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'plans';
+    protected $table = 'plan_has_schedules';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
-    protected $guarded = ['id'];
-    // protected $fillable = [];
+    // protected $guarded = ['id'];
+    protected $fillable = [];
     // protected $hidden = [];
     // protected $dates = [];
 
@@ -34,17 +34,7 @@ class Plan extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function plan_features(){
-        return $this->hasMany('App\Models\PlanFeature');
-    }
 
-    public function vouchers(){
-        return $this->belongsToMany('App\Models\Voucher','plan_has_vouchers','plan_id','voucher_id');
-    }
-
-    public function schedules(){
-        return $this->belongsToMany('App\Models\Schedule','plan_has_schedules','plan_id','schedule_id');
-    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES

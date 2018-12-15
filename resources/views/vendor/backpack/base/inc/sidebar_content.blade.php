@@ -26,12 +26,26 @@
 	</ul>
 </li>
 <li class="treeview">
+    <a href="#"><i class="fa fa-plane"></i> <span>Flight Schedule</span> <i class="fa fa-angle-left pull-right"></i></a>
+    <ul class="treeview-menu">
+      <li><a href='{{ backpack_url('schedule') }}'><i class='fa fa-calendar-check-o'></i> <span>Schedules</span></a></li>
+	  <li><a href='{{ backpack_url('scheduledetail') }}'><i class='fa fa-check-square-o'></i> <span>Schedule Details</span></a></li>
+    </ul>
+</li>
+<li class="treeview">
 	<a href="#"><i class="fa fa-object-group"></i> <span>Layout</span> <i class="fa fa-angle-left pull-right"></i></a>
 	<ul class="treeview-menu">
 		<li><a href="{{backpack_url('page') }}"><i class="fa fa-file-o"></i> <span>Pages</span></a></li>
 		<li><a href="{{ backpack_url('menu-item') }}"><i class="fa fa-list"></i> <span>Menu</span></a></li>
 		<li><a href='{{ backpack_url('slider') }}'><i class='fa fa-slideshare'></i> <span>Sliders</span></a></li>
 	</ul>
+</li>
+<li class="treeview">
+    <a href="#"><i class="fa fa-comment"></i> <span>Services</span> <i class="fa fa-angle-left pull-right"></i></a>
+    <ul class="treeview-menu">
+      <li><a href="#"><i class="fa fa-comment"></i> <span>Guest chats</span></a></li>
+      <li><a href="#"><i class="fa fa-comment"></i> <span>Customer chats</span></a></li>
+    </ul>
 </li>
 <li class="treeview">
     <a href="#"><i class="fa fa-cogs"></i> <span>Advanced</span> <i class="fa fa-angle-left pull-right"></i></a>
@@ -42,4 +56,5 @@
     </ul>
 </li>
 
+{{-- <li><a href='{{ backpack_url('planhasschedule') }}'><i class='fa fa-tag'></i> <span>Plan Has Schedules</span></a></li> --}}
 {{-- <li><a href='{{ backpack_url('planhasvoucher') }}'><i class='fa fa-tag'></i> <span>Plan Has Vouchers</span></a></li> --}}

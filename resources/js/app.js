@@ -8,6 +8,7 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+window.Swal = require('sweetalert2')
 
 /**
  * The following block of code may be used to automatically register your
@@ -18,6 +19,8 @@ window.Vue = require('vue');
  */
 
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
+Vue.component('payment-detail-component', require('./components/PaymentDetail.vue'));
+Vue.component('chat-component', require('./components/ChatComponent.vue'));
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))

@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
+use App\Models\Voucher;
 use App\Models\Plan;
-use App\User;
-use App\Models\Person;
 
-class PaymentController extends Controller
+class VoucherController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,16 +15,6 @@ class PaymentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
     {
         //
     }
@@ -53,17 +42,6 @@ class PaymentController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -86,17 +64,10 @@ class PaymentController extends Controller
         //
     }
 
-    public function detail($plan_id){
-        // dd($request);
-        $data['plan'] = Plan::with('vouchers','schedules.schedule_details')->find($plan_id);
-        if (Auth::check()) {
-            $data['user'] = User::find(Auth::user()->id);
-            $data['persons'] = Person::get();
-        }
-        return view('payments.detail',$data);
-    }
-
-    public function checkout(Request $request){
-
+    public function getVoucher(Request $request){
+        $plan = Plan::with(['vouchers'=>function($query)use($request){
+            $query->where('name',$request['code']);
+        }])->find($request["plan_id"]);
+        return response()->json($plan->vouchers);
     }
 }

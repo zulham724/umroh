@@ -1,7 +1,7 @@
 @extends('layouts.bookify')
 
 @section('css')
-<style type="text/css"></style>
+
 @endsection
 
 @section('content')
@@ -108,11 +108,12 @@
                           </table>
                       </div>
                       <div class="panel-footer">
-                          <form method="post" action="{{ route('payment.detail') }}">
+                          {{-- <form method="post" action="{{ route('payment.detail',$plan->id) }}">
                             @csrf
                             <input type="hidden" name="plan_id" value="{{ $plan->id }}">
-                            <a href="http://www.jquery2dotnet.com" type="submit" class="btn btn-success" role="button">Pilih Sekarang</a> 
-                          </form>
+                            <button type="submit" class="btn btn-success" role="button">Pilih Sekarang</button> 
+                          </form> --}}
+                          <a href="{{ route('payment.detail',$plan->id) }}" type="button" class="btn btn-success" role="button">Pilih Sekarang</a>
                           @if($plan->vouchers_count > 0)
                             Free {{ $plan->vouchers_count }} Voucher Available
                           @endif
