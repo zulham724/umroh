@@ -34,7 +34,9 @@ class Person extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-
+    public function order(){
+        return $this->belongsToMany('App\Models\Order','order_has_persons','order_id','person_id');
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES

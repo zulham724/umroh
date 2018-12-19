@@ -58,3 +58,5 @@
 
 {{-- <li><a href='{{ backpack_url('planhasschedule') }}'><i class='fa fa-tag'></i> <span>Plan Has Schedules</span></a></li> --}}
 {{-- <li><a href='{{ backpack_url('planhasvoucher') }}'><i class='fa fa-tag'></i> <span>Plan Has Vouchers</span></a></li> --}}
+
+<li><a href='{{ backpack_url('transaction') }}'><i class='fa fa-tag'></i> <span>Transactions</span></a></li>

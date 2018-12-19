@@ -22,4 +22,5 @@ Route::group([
     CRUD::resource('schedule', 'ScheduleCrudController');
     CRUD::resource('scheduledetail', 'ScheduleDetailCrudController');
     CRUD::resource('planhasschedule', 'PlanHasScheduleCrudController');
+    CRUD::resource('transaction', 'TransactionCrudController');
 }); // this should be the absolute last line of this file

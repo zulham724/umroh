@@ -17,10 +17,17 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('payment/detail/{plan_id}','PaymentController@detail')->name('payment.detail');
 
 Route::group(['middleware'=>'auth'],function(){
+	Route::get('payment/detail/{plan_id}','PaymentController@detail')->name('payment.detail');
 	Route::post('payment/checkout','PaymentController@checkout')->name('payment.checkout');
+	Route::get('payment/success/{order_id}','PaymentController@success')->name('payment.success');
+
+	Route::get('dashboard','DashboardController@dashboard')->name('dashboard');
+	Route::resources([
+		"orders"=>"OrderController",
+		"transactions"=>"TransactionController"
+	]);
 });
 
 

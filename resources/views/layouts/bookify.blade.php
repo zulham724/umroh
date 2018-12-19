@@ -75,6 +75,9 @@
                       @endif
                   @else
                       <li class="nav-item">
+                          <a class="nav-link" href="#"><i class="fa fa-calendar"></i> Dashboard</a>
+                      </li>
+                      <li class="nav-item">
 
                           <a href="{{ route('backpack.auth.logout') }}"
                              onclick="event.preventDefault();

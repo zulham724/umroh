@@ -17,7 +17,7 @@ class ScheduleDetailsTableSeeder extends Seeder
         		"schedule_id"=>1,
         		"name"=>"Semarang",
         		"description"=>"Persiapan dan Inap Hotel",
-        		"start_at"=>"2019-03-22",
+        		"start_at"=>"2019-03-21",
         		"end_at"=>"2019-03-25"
         	],
         	[
@@ -38,7 +38,7 @@ class ScheduleDetailsTableSeeder extends Seeder
         		"schedule_id"=>2,
         		"name"=>"Semarang",
         		"description"=>"Persiapan dan Inap Hotel",
-        		"start_at"=>"2019-04-22",
+        		"start_at"=>"2019-04-21",
         		"end_at"=>"2019-04-25"
         	],
         	[
@@ -59,7 +59,7 @@ class ScheduleDetailsTableSeeder extends Seeder
         		"schedule_id"=>3,
         		"name"=>"Semarang",
         		"description"=>"Persiapan dan Inap Hotel",
-        		"start_at"=>"2019-05-22",
+        		"start_at"=>"2019-05-21",
         		"end_at"=>"2019-05-25"
         	],
         	[

@@ -17,6 +17,7 @@ class CreateOrdersTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('plan_id');
+            $table->unsignedInteger('schedule_id');
             $table->integer('quantity');
             $table->bigInteger('total_amount');
             $table->dateTime('start_at');
@@ -25,6 +26,7 @@ class CreateOrdersTable extends Migration
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('plan_id')->references('id')->on('plans')->onDelete('cascade');
+            $table->foreign('schedule_id')->references('id')->on('schedules')->onDelete('cascade');
         });
     }
 

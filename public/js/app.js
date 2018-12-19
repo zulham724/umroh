@@ -51041,36 +51041,65 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ["plan_id", "persons"],
+    props: ["plan_id", "userpersons"],
     data: function data() {
         return {
             plan: {},
-            schedule: null,
-            selected: '',
+            schedule: {
+                capacity: null
+            },
             code: null,
-            voucher: null
+            voucher: null,
+            order: {
+                plan_id: 2,
+                schedule_id: '',
+                persons: [{
+                    gender: '',
+                    relation_status: ''
+                }]
+            },
+            dp: 'false'
         };
     },
     mounted: function mounted() {
-        console.log('Component mounted.');
-    },
-    created: function created() {
         var _this = this;
 
+        console.log('Component mounted.');
+        this.order.plan_id = this.plan_id;
         axios.get('/api/plans/' + this.plan_id).then(function (res) {
             _this.plan = res.data;
         });
     },
+    created: function created() {},
 
     methods: {
         getSchedule: function getSchedule() {
             var _this2 = this;
 
-            axios.get('/api/schedules/' + this.selected).then(function (res) {
+            axios.get('/api/schedules/' + this.order.schedule_id).then(function (res) {
                 _this2.schedule = res.data;
             });
+        },
+        addPerson: function addPerson() {
+            this.order.persons.push({});
+        },
+        removePerson: function removePerson(index) {
+            this.order.persons.splice(index, 1);
+        },
+        addPassport: function addPassport(index) {
+            this.order.persons[index].passport = {};
+            this.$forceUpdate();
         },
         getVoucher: function getVoucher() {
             var _this3 = this;
@@ -51100,6 +51129,44 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     });
                 }
             });
+        },
+        submitForm: function submitForm() {
+            var access = {
+                order: this.order
+            };
+
+            this.dp == 'true' ? access.dp = this.dp : delete access.dp;
+            this.voucher != null ? access.voucher = this.voucher : delete access.voucher;
+
+            axios.post("/payment/checkout", access).then(function (res) {
+
+                snap.pay(res.data.snap_token, {
+                    // Optional
+                    onSuccess: function onSuccess(result) {
+                        Swal({
+                            title: 'Success!',
+                            text: 'Pembayaran Anda Berhasil',
+                            type: 'info',
+                            showConfirmButton: false,
+                            timer: 3500
+                        });
+                    },
+                    // Optional
+                    onPending: function onPending(result) {
+                        window.location.replace('/payment/success/' + res.data.order.id);
+                    },
+                    // Optional
+                    onError: function onError(result) {
+                        Swal({
+                            title: 'Oppss!',
+                            text: 'Terjadi Kesalahan',
+                            type: 'error',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    }
+                });
+            });
         }
     }
 });
@@ -51116,6 +51183,27 @@ var render = function() {
     "div",
     { staticClass: "theme-page-section theme-page-section-lg" },
     [
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.order.plan_id,
+            expression: "order.plan_id"
+          }
+        ],
+        attrs: { type: "hidden", name: "order[plan_id]" },
+        domProps: { value: _vm.order.plan_id },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.$set(_vm.order, "plan_id", $event.target.value)
+          }
+        }
+      }),
+      _vm._v(" "),
       _c("div", { staticClass: "container" }, [
         _c(
           "div",
@@ -51145,7 +51233,7 @@ var render = function() {
                                 staticClass:
                                   "theme-search-results-item-flight-payment-airline"
                               },
-                              [_vm._v("You are flying American Airlines")]
+                              [_vm._v("You are flying Indonesia Airlines")]
                             ),
                             _vm._v(" "),
                             _c("div", { staticClass: "form-group" }, [
@@ -51158,12 +51246,15 @@ var render = function() {
                                     {
                                       name: "model",
                                       rawName: "v-model",
-                                      value: _vm.selected,
-                                      expression: "selected"
+                                      value: _vm.order.schedule_id,
+                                      expression: "order.schedule_id"
                                     }
                                   ],
                                   staticClass: "form-control",
-                                  attrs: { name: "schedule_id" },
+                                  attrs: {
+                                    name: "order[schedule_id]",
+                                    required: ""
+                                  },
                                   on: {
                                     change: [
                                       function($event) {
@@ -51178,9 +51269,13 @@ var render = function() {
                                               "_value" in o ? o._value : o.value
                                             return val
                                           })
-                                        _vm.selected = $event.target.multiple
-                                          ? $$selectedVal
-                                          : $$selectedVal[0]
+                                        _vm.$set(
+                                          _vm.order,
+                                          "schedule_id",
+                                          $event.target.multiple
+                                            ? $$selectedVal
+                                            : $$selectedVal[0]
+                                        )
                                       },
                                       function($event) {
                                         _vm.getSchedule()
@@ -51207,7 +51302,7 @@ var render = function() {
                               )
                             ]),
                             _vm._v(" "),
-                            _vm.schedule
+                            _vm.schedule.capacity
                               ? _c("div", [
                                   _c(
                                     "h5",
@@ -51234,7 +51329,9 @@ var render = function() {
                                     },
                                     [
                                       _vm._v(
-                                        "Round-trip, " +
+                                        "Capacity: " +
+                                          _vm._s(_vm.schedule.capacity) +
+                                          " Persons, " +
                                           _vm._s(_vm.schedule.type)
                                       )
                                     ]
@@ -51273,7 +51370,206 @@ var render = function() {
                                   _vm._v(" "),
                                   _vm._m(0),
                                   _vm._v(" "),
-                                  _vm._m(1)
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass: "collapse _pt-20",
+                                      attrs: { id: "FlightPaymentDetails" }
+                                    },
+                                    [
+                                      _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "theme-search-results-item-flight-detail-items"
+                                        },
+                                        _vm._l(
+                                          _vm.schedule.schedule_details,
+                                          function(schedule_detail) {
+                                            return _c(
+                                              "div",
+                                              {
+                                                staticClass:
+                                                  "theme-search-results-item-flight-details"
+                                              },
+                                              [
+                                                _c(
+                                                  "div",
+                                                  { staticClass: "row" },
+                                                  [
+                                                    _c(
+                                                      "div",
+                                                      {
+                                                        staticClass: "col-md-3 "
+                                                      },
+                                                      [
+                                                        _vm.schedule.start_at ==
+                                                        schedule_detail.start_at
+                                                          ? _c(
+                                                              "div",
+                                                              {
+                                                                staticClass:
+                                                                  "theme-search-results-item-flight-details-info"
+                                                              },
+                                                              [
+                                                                _c(
+                                                                  "h5",
+                                                                  {
+                                                                    staticClass:
+                                                                      "theme-search-results-item-flight-details-info-title"
+                                                                  },
+                                                                  [
+                                                                    _vm._v(
+                                                                      "Depart"
+                                                                    )
+                                                                  ]
+                                                                ),
+                                                                _vm._v(" "),
+                                                                _c(
+                                                                  "p",
+                                                                  {
+                                                                    staticClass:
+                                                                      "theme-search-results-item-flight-details-info-date"
+                                                                  },
+                                                                  [
+                                                                    _vm._v(
+                                                                      "Tue, May 23"
+                                                                    )
+                                                                  ]
+                                                                ),
+                                                                _vm._v(" "),
+                                                                _c(
+                                                                  "p",
+                                                                  {
+                                                                    staticClass:
+                                                                      "theme-search-results-item-flight-details-info-cities"
+                                                                  },
+                                                                  [
+                                                                    _vm._v(
+                                                                      "New York → London"
+                                                                    )
+                                                                  ]
+                                                                ),
+                                                                _vm._v(" "),
+                                                                _c(
+                                                                  "p",
+                                                                  {
+                                                                    staticClass:
+                                                                      "theme-search-results-item-flight-details-info-fly-time"
+                                                                  },
+                                                                  [
+                                                                    _vm._v(
+                                                                      "14h 30m"
+                                                                    )
+                                                                  ]
+                                                                ),
+                                                                _vm._v(" "),
+                                                                _c(
+                                                                  "p",
+                                                                  {
+                                                                    staticClass:
+                                                                      "theme-search-results-item-flight-details-info-stops"
+                                                                  },
+                                                                  [
+                                                                    _vm._v(
+                                                                      "non-stop"
+                                                                    )
+                                                                  ]
+                                                                )
+                                                              ]
+                                                            )
+                                                          : _vm._e(),
+                                                        _vm._v(" "),
+                                                        _vm.schedule.end_at ==
+                                                        schedule_detail.end_at
+                                                          ? _c(
+                                                              "div",
+                                                              {
+                                                                staticClass:
+                                                                  "theme-search-results-item-flight-details-info"
+                                                              },
+                                                              [
+                                                                _c(
+                                                                  "h5",
+                                                                  {
+                                                                    staticClass:
+                                                                      "theme-search-results-item-flight-details-info-title"
+                                                                  },
+                                                                  [
+                                                                    _vm._v(
+                                                                      "Return"
+                                                                    )
+                                                                  ]
+                                                                ),
+                                                                _vm._v(" "),
+                                                                _c(
+                                                                  "p",
+                                                                  {
+                                                                    staticClass:
+                                                                      "theme-search-results-item-flight-details-info-date"
+                                                                  },
+                                                                  [
+                                                                    _vm._v(
+                                                                      "Tue, May 23"
+                                                                    )
+                                                                  ]
+                                                                ),
+                                                                _vm._v(" "),
+                                                                _c(
+                                                                  "p",
+                                                                  {
+                                                                    staticClass:
+                                                                      "theme-search-results-item-flight-details-info-cities"
+                                                                  },
+                                                                  [
+                                                                    _vm._v(
+                                                                      "New York → London"
+                                                                    )
+                                                                  ]
+                                                                ),
+                                                                _vm._v(" "),
+                                                                _c(
+                                                                  "p",
+                                                                  {
+                                                                    staticClass:
+                                                                      "theme-search-results-item-flight-details-info-fly-time"
+                                                                  },
+                                                                  [
+                                                                    _vm._v(
+                                                                      "14h 30m"
+                                                                    )
+                                                                  ]
+                                                                ),
+                                                                _vm._v(" "),
+                                                                _c(
+                                                                  "p",
+                                                                  {
+                                                                    staticClass:
+                                                                      "theme-search-results-item-flight-details-info-stops"
+                                                                  },
+                                                                  [
+                                                                    _vm._v(
+                                                                      "non-stop"
+                                                                    )
+                                                                  ]
+                                                                )
+                                                              ]
+                                                            )
+                                                          : _vm._e()
+                                                      ]
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _vm._m(1, true)
+                                                  ]
+                                                )
+                                              ]
+                                            )
+                                          }
+                                        ),
+                                        0
+                                      )
+                                    ]
+                                  )
                                 ])
                               : _vm._e()
                           ]),
@@ -51285,129 +51581,1333 @@ var render = function() {
                   )
                 ]),
                 _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "theme-payment-page-sections-item" },
+                  [
+                    _vm.userpersons
+                      ? _c("div", [
+                          _c(
+                            "h3",
+                            {
+                              staticClass:
+                                "theme-payment-page-sections-item-title"
+                            },
+                            [_vm._v("Select Passenger")]
+                          ),
+                          _vm._v(" "),
+                          _vm._m(3)
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            _vm.addPerson()
+                          }
+                        }
+                      },
+                      [_vm._v("+ Add New Passenger")]
+                    ),
+                    _vm._v(" "),
+                    _vm._l(_vm.order.persons, function(person, p) {
+                      return _c(
+                        "div",
+                        {
+                          staticClass:
+                            "theme-payment-page-sections-item-new-extend",
+                          model: {
+                            value: _vm.order.persons[p],
+                            callback: function($$v) {
+                              _vm.$set(_vm.order.persons, p, $$v)
+                            },
+                            expression: "order.persons[p]"
+                          }
+                        },
+                        [
+                          _c(
+                            "div",
+                            { staticClass: "theme-payment-page-form" },
+                            [
+                              _c(
+                                "h3",
+                                {
+                                  staticClass: "theme-payment-page-form-title"
+                                },
+                                [_vm._v("Passenger " + _vm._s(p + 1))]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "row row-col-gap",
+                                  attrs: { "data-gutter": "20" }
+                                },
+                                [
+                                  _c("div", { staticClass: "col-md-6 " }, [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass: "row row-col-gap",
+                                        attrs: { "data-gutter": "10" }
+                                      },
+                                      [
+                                        _c(
+                                          "div",
+                                          { staticClass: "col-md-12 " },
+                                          [
+                                            _c(
+                                              "div",
+                                              {
+                                                staticClass:
+                                                  "theme-payment-page-form-item form-group"
+                                              },
+                                              [
+                                                _c("input", {
+                                                  directives: [
+                                                    {
+                                                      name: "model",
+                                                      rawName: "v-model",
+                                                      value:
+                                                        _vm.order.persons[p]
+                                                          .birthdate,
+                                                      expression:
+                                                        "order.persons[p].birthdate"
+                                                    }
+                                                  ],
+                                                  staticClass: "form-control",
+                                                  attrs: {
+                                                    type: "date",
+                                                    name:
+                                                      "order[persons][" +
+                                                      p +
+                                                      "][birthdate]",
+                                                    required: ""
+                                                  },
+                                                  domProps: {
+                                                    value:
+                                                      _vm.order.persons[p]
+                                                        .birthdate
+                                                  },
+                                                  on: {
+                                                    input: function($event) {
+                                                      if (
+                                                        $event.target.composing
+                                                      ) {
+                                                        return
+                                                      }
+                                                      _vm.$set(
+                                                        _vm.order.persons[p],
+                                                        "birthdate",
+                                                        $event.target.value
+                                                      )
+                                                    }
+                                                  }
+                                                })
+                                              ]
+                                            )
+                                          ]
+                                        )
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-6 " }, [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "theme-payment-page-form-item form-group"
+                                      },
+                                      [
+                                        _c("i", {
+                                          staticClass: "fa fa-angle-down"
+                                        }),
+                                        _vm._v(" "),
+                                        _c(
+                                          "select",
+                                          {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value:
+                                                  _vm.order.persons[p].gender,
+                                                expression:
+                                                  "order.persons[p].gender"
+                                              }
+                                            ],
+                                            staticClass: "form-control",
+                                            attrs: {
+                                              name:
+                                                "order[persons][" +
+                                                p +
+                                                "][gender]"
+                                            },
+                                            on: {
+                                              change: function($event) {
+                                                var $$selectedVal = Array.prototype.filter
+                                                  .call(
+                                                    $event.target.options,
+                                                    function(o) {
+                                                      return o.selected
+                                                    }
+                                                  )
+                                                  .map(function(o) {
+                                                    var val =
+                                                      "_value" in o
+                                                        ? o._value
+                                                        : o.value
+                                                    return val
+                                                  })
+                                                _vm.$set(
+                                                  _vm.order.persons[p],
+                                                  "gender",
+                                                  $event.target.multiple
+                                                    ? $$selectedVal
+                                                    : $$selectedVal[0]
+                                                )
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _c(
+                                              "option",
+                                              { attrs: { value: "" } },
+                                              [_vm._v("Gender")]
+                                            ),
+                                            _vm._v(" "),
+                                            _c(
+                                              "option",
+                                              { attrs: { value: "Male" } },
+                                              [_vm._v("Male")]
+                                            ),
+                                            _vm._v(" "),
+                                            _c(
+                                              "option",
+                                              { attrs: { value: "Female" } },
+                                              [_vm._v("Female")]
+                                            )
+                                          ]
+                                        )
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-6 " }, [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "theme-payment-page-form-item form-group"
+                                      },
+                                      [
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value:
+                                                _vm.order.persons[p].firstname,
+                                              expression:
+                                                "order.persons[p].firstname"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            type: "text",
+                                            placeholder: "First Name",
+                                            value: "nama",
+                                            name:
+                                              "order[persons][" +
+                                              p +
+                                              "][firstname]",
+                                            required: ""
+                                          },
+                                          domProps: {
+                                            value:
+                                              _vm.order.persons[p].firstname
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.order.persons[p],
+                                                "firstname",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        })
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-6 " }, [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "theme-payment-page-form-item form-group"
+                                      },
+                                      [
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value:
+                                                _vm.order.persons[p].lastname,
+                                              expression:
+                                                "order.persons[p].lastname"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            type: "text",
+                                            placeholder: "Last Name",
+                                            value: "saya",
+                                            name:
+                                              "order[persons][" +
+                                              p +
+                                              "][lastname]",
+                                            required: ""
+                                          },
+                                          domProps: {
+                                            value: _vm.order.persons[p].lastname
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.order.persons[p],
+                                                "lastname",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        })
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-6 " }, [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "theme-payment-page-form-item form-group"
+                                      },
+                                      [
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value:
+                                                _vm.order.persons[p]
+                                                  .identity_number,
+                                              expression:
+                                                "order.persons[p].identity_number"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            type: "text",
+                                            placeholder: "No KTP",
+                                            value: "087",
+                                            name:
+                                              "order[persons][" +
+                                              p +
+                                              "][identity_number]",
+                                            required: ""
+                                          },
+                                          domProps: {
+                                            value:
+                                              _vm.order.persons[p]
+                                                .identity_number
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.order.persons[p],
+                                                "identity_number",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        })
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-6 " }, [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "theme-payment-page-form-item form-group"
+                                      },
+                                      [
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.order.persons[p].email,
+                                              expression:
+                                                "order.persons[p].email"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            type: "email",
+                                            placeholder: "Email",
+                                            value: "asegaf@ymail.com",
+                                            name:
+                                              "order[persons][" +
+                                              p +
+                                              "][email]",
+                                            required: ""
+                                          },
+                                          domProps: {
+                                            value: _vm.order.persons[p].email
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.order.persons[p],
+                                                "email",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        })
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-6 " }, [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "theme-payment-page-form-item form-group"
+                                      },
+                                      [
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value: _vm.order.persons[p].phone,
+                                              expression:
+                                                "order.persons[p].phone"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            type: "text",
+                                            placeholder: "Phone",
+                                            value: "098123123",
+                                            name:
+                                              "order[persons][" +
+                                              p +
+                                              "][phone]",
+                                            required: ""
+                                          },
+                                          domProps: {
+                                            value: _vm.order.persons[p].phone
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.order.persons[p],
+                                                "phone",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        })
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-6 " }, [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "theme-payment-page-form-item form-group"
+                                      },
+                                      [
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value:
+                                                _vm.order.persons[p].address,
+                                              expression:
+                                                "order.persons[p].address"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            type: "text",
+                                            placeholder: "Address",
+                                            value: "Pesanggaran",
+                                            name:
+                                              "order[persons][" +
+                                              p +
+                                              "][address]",
+                                            required: ""
+                                          },
+                                          domProps: {
+                                            value: _vm.order.persons[p].address
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.order.persons[p],
+                                                "address",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        })
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-6 " }, [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "theme-payment-page-form-item form-group"
+                                      },
+                                      [
+                                        _c("i", {
+                                          staticClass: "fa fa-angle-down"
+                                        }),
+                                        _vm._v(" "),
+                                        _c(
+                                          "select",
+                                          {
+                                            directives: [
+                                              {
+                                                name: "model",
+                                                rawName: "v-model",
+                                                value:
+                                                  _vm.order.persons[p]
+                                                    .relation_status,
+                                                expression:
+                                                  "order.persons[p].relation_status"
+                                              }
+                                            ],
+                                            staticClass: "form-control",
+                                            attrs: {
+                                              name:
+                                                "order[persons][" +
+                                                p +
+                                                "][relation_status]",
+                                              required: ""
+                                            },
+                                            on: {
+                                              change: function($event) {
+                                                var $$selectedVal = Array.prototype.filter
+                                                  .call(
+                                                    $event.target.options,
+                                                    function(o) {
+                                                      return o.selected
+                                                    }
+                                                  )
+                                                  .map(function(o) {
+                                                    var val =
+                                                      "_value" in o
+                                                        ? o._value
+                                                        : o.value
+                                                    return val
+                                                  })
+                                                _vm.$set(
+                                                  _vm.order.persons[p],
+                                                  "relation_status",
+                                                  $event.target.multiple
+                                                    ? $$selectedVal
+                                                    : $$selectedVal[0]
+                                                )
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _c(
+                                              "option",
+                                              { attrs: { value: "" } },
+                                              [_vm._v("Status")]
+                                            ),
+                                            _vm._v(" "),
+                                            _c(
+                                              "option",
+                                              { attrs: { value: "Lajang" } },
+                                              [_vm._v("Lajang")]
+                                            ),
+                                            _vm._v(" "),
+                                            _c(
+                                              "option",
+                                              { attrs: { value: "Menikah" } },
+                                              [_vm._v("Menikah")]
+                                            )
+                                          ]
+                                        )
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-6 " }, [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "theme-payment-page-form-item form-group"
+                                      },
+                                      [
+                                        _c("input", {
+                                          directives: [
+                                            {
+                                              name: "model",
+                                              rawName: "v-model",
+                                              value:
+                                                _vm.order.persons[p].profession,
+                                              expression:
+                                                "order.persons[p].profession"
+                                            }
+                                          ],
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            type: "text",
+                                            placeholder: "Pekerjaan",
+                                            value: "JOB",
+                                            name:
+                                              "order[persons][" +
+                                              p +
+                                              "][profession]",
+                                            required: ""
+                                          },
+                                          domProps: {
+                                            value:
+                                              _vm.order.persons[p].profession
+                                          },
+                                          on: {
+                                            input: function($event) {
+                                              if ($event.target.composing) {
+                                                return
+                                              }
+                                              _vm.$set(
+                                                _vm.order.persons[p],
+                                                "profession",
+                                                $event.target.value
+                                              )
+                                            }
+                                          }
+                                        })
+                                      ]
+                                    )
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "col-md-6 " }, [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "theme-payment-page-form-item form-group"
+                                      },
+                                      [
+                                        _c("label", [_vm._v("Foto KTP")]),
+                                        _vm._v(" "),
+                                        _c("input", {
+                                          staticClass: "form-control",
+                                          attrs: {
+                                            type: "file",
+                                            placeholder: "Foto KTP",
+                                            name:
+                                              "order[persons][" +
+                                              p +
+                                              "][identity_image]"
+                                          }
+                                        })
+                                      ]
+                                    )
+                                  ])
+                                ]
+                              ),
+                              _vm._v(" "),
+                              person.passport
+                                ? _c("div", [
+                                    _c("hr"),
+                                    _vm._v(" "),
+                                    _c("div", { staticClass: "row" }, [
+                                      _c("div", { staticClass: "col-md-6" }, [
+                                        _c(
+                                          "div",
+                                          {
+                                            staticClass:
+                                              "theme-payment-page-form-item form-group"
+                                          },
+                                          [
+                                            _c("label", [
+                                              _vm._v("Nama Lengkap")
+                                            ]),
+                                            _vm._v(" "),
+                                            _c("input", {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value:
+                                                    _vm.order.persons[p]
+                                                      .passport.name,
+                                                  expression:
+                                                    "order.persons[p].passport.name"
+                                                }
+                                              ],
+                                              staticClass: "form-control",
+                                              attrs: {
+                                                type: "text",
+                                                placeholder: "Nama Lengkap",
+                                                name:
+                                                  "order[persons][" +
+                                                  p +
+                                                  "][passport][name]",
+                                                required: ""
+                                              },
+                                              domProps: {
+                                                value:
+                                                  _vm.order.persons[p].passport
+                                                    .name
+                                              },
+                                              on: {
+                                                input: function($event) {
+                                                  if ($event.target.composing) {
+                                                    return
+                                                  }
+                                                  _vm.$set(
+                                                    _vm.order.persons[p]
+                                                      .passport,
+                                                    "name",
+                                                    $event.target.value
+                                                  )
+                                                }
+                                              }
+                                            })
+                                          ]
+                                        )
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("div", { staticClass: "col-md-6" }, [
+                                        _c(
+                                          "div",
+                                          {
+                                            staticClass:
+                                              "theme-payment-page-form-item form-group"
+                                          },
+                                          [
+                                            _c("label", [_vm._v("Alamat")]),
+                                            _vm._v(" "),
+                                            _c("input", {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value:
+                                                    _vm.order.persons[p]
+                                                      .passport.address,
+                                                  expression:
+                                                    "order.persons[p].passport.address"
+                                                }
+                                              ],
+                                              staticClass: "form-control",
+                                              attrs: {
+                                                type: "text",
+                                                placeholder: "Alamat",
+                                                name:
+                                                  "order[persons][" +
+                                                  p +
+                                                  "][passport][address]",
+                                                required: ""
+                                              },
+                                              domProps: {
+                                                value:
+                                                  _vm.order.persons[p].passport
+                                                    .address
+                                              },
+                                              on: {
+                                                input: function($event) {
+                                                  if ($event.target.composing) {
+                                                    return
+                                                  }
+                                                  _vm.$set(
+                                                    _vm.order.persons[p]
+                                                      .passport,
+                                                    "address",
+                                                    $event.target.value
+                                                  )
+                                                }
+                                              }
+                                            })
+                                          ]
+                                        )
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("div", { staticClass: "col-md-6" }, [
+                                        _c(
+                                          "div",
+                                          {
+                                            staticClass:
+                                              "theme-payment-page-form-item form-group"
+                                          },
+                                          [
+                                            _c("label", [
+                                              _vm._v("Tanggal Terbit")
+                                            ]),
+                                            _vm._v(" "),
+                                            _c("input", {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value:
+                                                    _vm.order.persons[p]
+                                                      .passport.release_date,
+                                                  expression:
+                                                    "order.persons[p].passport.release_date"
+                                                }
+                                              ],
+                                              staticClass: "form-control",
+                                              attrs: {
+                                                type: "date",
+                                                placeholder: "Tanggal Terbit",
+                                                name:
+                                                  "order[persons][" +
+                                                  p +
+                                                  "][passport][release_date]",
+                                                required: ""
+                                              },
+                                              domProps: {
+                                                value:
+                                                  _vm.order.persons[p].passport
+                                                    .release_date
+                                              },
+                                              on: {
+                                                input: function($event) {
+                                                  if ($event.target.composing) {
+                                                    return
+                                                  }
+                                                  _vm.$set(
+                                                    _vm.order.persons[p]
+                                                      .passport,
+                                                    "release_date",
+                                                    $event.target.value
+                                                  )
+                                                }
+                                              }
+                                            })
+                                          ]
+                                        )
+                                      ]),
+                                      _vm._v(" "),
+                                      _c("div", { staticClass: "col-md-6" }, [
+                                        _c(
+                                          "div",
+                                          {
+                                            staticClass:
+                                              "theme-payment-page-form-item form-group"
+                                          },
+                                          [
+                                            _c("label", [
+                                              _vm._v("Diterbitkan di")
+                                            ]),
+                                            _vm._v(" "),
+                                            _c("input", {
+                                              directives: [
+                                                {
+                                                  name: "model",
+                                                  rawName: "v-model",
+                                                  value:
+                                                    _vm.order.persons[p]
+                                                      .passport.release_at,
+                                                  expression:
+                                                    "order.persons[p].passport.release_at"
+                                                }
+                                              ],
+                                              staticClass: "form-control",
+                                              attrs: {
+                                                type: "text",
+                                                placeholder: "Diterbitkan di",
+                                                name:
+                                                  "order[persons][" +
+                                                  p +
+                                                  "][passport][release_at]",
+                                                required: ""
+                                              },
+                                              domProps: {
+                                                value:
+                                                  _vm.order.persons[p].passport
+                                                    .release_at
+                                              },
+                                              on: {
+                                                input: function($event) {
+                                                  if ($event.target.composing) {
+                                                    return
+                                                  }
+                                                  _vm.$set(
+                                                    _vm.order.persons[p]
+                                                      .passport,
+                                                    "release_at",
+                                                    $event.target.value
+                                                  )
+                                                }
+                                              }
+                                            })
+                                          ]
+                                        )
+                                      ])
+                                    ])
+                                  ])
+                                : _vm._e(),
+                              _vm._v(" "),
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-danger pull-right",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      _vm.removePerson(p)
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("i", { staticClass: "fa fa-times" }),
+                                  _vm._v(" Remove Passenger")
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-info pull-right",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      _vm.addPassport(p)
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("i", { staticClass: "fa fa-plane" }),
+                                  _vm._v(" Add Passport")
+                                ]
+                              )
+                            ]
+                          )
+                        ]
+                      )
+                    })
+                  ],
+                  2
+                ),
+                _vm._v(" "),
                 _c("div", { staticClass: "theme-payment-page-sections-item" }, [
-                  _vm.persons
-                    ? _c("div", [
+                  _c("div", { staticClass: "theme-payment-page-booking" }, [
+                    _c(
+                      "div",
+                      { staticClass: "theme-payment-page-booking-header" },
+                      [
                         _c(
                           "h3",
-                          {
-                            staticClass:
-                              "theme-payment-page-sections-item-title"
-                          },
-                          [_vm._v("Select Passenger")]
+                          { staticClass: "theme-payment-page-booking-title" },
+                          [_vm._v("Total")]
                         ),
                         _vm._v(" "),
-                        _vm._m(3)
-                      ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: {
-                        href: "#AddNewTraveler",
-                        "data-toggle": "collapse",
-                        "aria-expanded": "false",
-                        "aria-controls": "AddNewTraveler"
-                      }
-                    },
-                    [_vm._v("+ Add New Passenger")]
-                  ),
-                  _vm._v(" "),
-                  _vm._m(4)
-                ]),
-                _vm._v(" "),
-                _vm._m(5)
+                        _c(
+                          "p",
+                          {
+                            staticClass: "theme-payment-page-booking-subtitle"
+                          },
+                          [
+                            _vm._v(
+                              "By clicking book now button you agree with terms and conditionals and money back gurantee. Thank you for trusting our service."
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "p",
+                          { staticClass: "theme-payment-page-booking-price" },
+                          [
+                            _vm._v(
+                              "Rp " +
+                                _vm._s(
+                                  (
+                                    (_vm.plan.price -
+                                      (_vm.plan.price * _vm.plan.discount) /
+                                        100) *
+                                      _vm.order.persons.length -
+                                    (_vm.voucher ? _vm.voucher.value : 0)
+                                  ).toLocaleString()
+                                )
+                            )
+                          ]
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass:
+                          "btn _tt-uc btn-primary-inverse btn-lg btn-block",
+                        on: {
+                          click: function($event) {
+                            _vm.submitForm()
+                          }
+                        }
+                      },
+                      [_vm._v("Book Now")]
+                    )
+                  ])
+                ])
               ])
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "col-md-4 " }, [
-              _c("div", { staticClass: "sticky-col" }, [
-                _c("div", { staticClass: "theme-sidebar-section _mb-10" }, [
-                  _c("h5", { staticClass: "theme-sidebar-section-title" }, [
-                    _vm._v("Booking Summary")
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "ul",
-                    { staticClass: "theme-sidebar-section-summary-list" },
-                    [
-                      _c("li", [_vm._v("Paket " + _vm._s(_vm.plan.name))]),
-                      _vm._v(" "),
-                      _c("li", [
-                        _vm._v("Discount: " + _vm._s(_vm.plan.discount) + "%")
+            _vm.plan.price
+              ? _c("div", { staticClass: "col-md-4 " }, [
+                  _c("div", { staticClass: "sticky-col" }, [
+                    _c("div", { staticClass: "theme-sidebar-section _mb-10" }, [
+                      _c("h5", { staticClass: "theme-sidebar-section-title" }, [
+                        _vm._v("Booking Summary")
                       ]),
                       _vm._v(" "),
-                      _c("li", [
-                        _vm._v(
-                          "Price: Rp " +
-                            _vm._s(
-                              (
-                                _vm.plan.price -
-                                (_vm.plan.price * _vm.plan.discount) / 100
-                              ).toLocaleString()
-                            ) +
-                            "/org"
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _c("li", [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.code,
-                              expression: "code"
-                            }
-                          ],
-                          attrs: { type: "text", placeholder: "Kode Voucher" },
-                          domProps: { value: _vm.code },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.code = $event.target.value
-                            }
-                          }
-                        }),
-                        _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            on: {
-                              click: function($event) {
-                                _vm.getVoucher()
-                              }
-                            }
-                          },
-                          [
-                            _c("i", { staticClass: "fa fa-search" }, [
-                              _vm._v("Cari")
-                            ])
-                          ]
-                        )
-                      ]),
-                      _vm._v(" "),
-                      _vm.voucher
-                        ? _c("li", [
+                      _c(
+                        "ul",
+                        { staticClass: "theme-sidebar-section-summary-list" },
+                        [
+                          _c("li", [_vm._v("Paket " + _vm._s(_vm.plan.name))]),
+                          _vm._v(" "),
+                          _c("li", [
                             _vm._v(
-                              "Terima Potongan Rp " +
-                                _vm._s(_vm.voucher.value.toLocaleString())
+                              "Price: Rp " +
+                                _vm._s(_vm.plan.price.toLocaleString()) +
+                                "/org"
                             )
-                          ])
-                        : _vm._e()
-                    ]
-                  )
-                ]),
-                _vm._v(" "),
-                _vm._m(6),
-                _vm._v(" "),
-                _vm._m(7)
-              ])
-            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("li", [
+                            _vm._v(
+                              "Discount: " + _vm._s(_vm.plan.discount) + "%"
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("li", [
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: _vm.code,
+                                  expression: "code"
+                                }
+                              ],
+                              attrs: {
+                                type: "text",
+                                placeholder: "Kode Voucher"
+                              },
+                              domProps: { value: _vm.code },
+                              on: {
+                                input: function($event) {
+                                  if ($event.target.composing) {
+                                    return
+                                  }
+                                  _vm.code = $event.target.value
+                                }
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "button",
+                              {
+                                on: {
+                                  click: function($event) {
+                                    _vm.getVoucher()
+                                  }
+                                }
+                              },
+                              [
+                                _c("i", { staticClass: "fa fa-search" }, [
+                                  _vm._v("Cari")
+                                ])
+                              ]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _vm.voucher
+                            ? _c("li", [
+                                _vm._v(
+                                  "Terima Potongan Rp " +
+                                    _vm._s(_vm.voucher.value.toLocaleString())
+                                )
+                              ])
+                            : _vm._e()
+                        ]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "theme-sidebar-section _mb-10" }, [
+                      _c("h5", { staticClass: "theme-sidebar-section-title" }, [
+                        _vm._v("Charges")
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        { staticClass: "theme-sidebar-section-charges" },
+                        [
+                          _c(
+                            "ul",
+                            {
+                              staticClass: "theme-sidebar-section-charges-list"
+                            },
+                            [
+                              _c(
+                                "li",
+                                {
+                                  staticClass:
+                                    "theme-sidebar-section-charges-item"
+                                },
+                                [
+                                  _c(
+                                    "h5",
+                                    {
+                                      staticClass:
+                                        "theme-sidebar-section-charges-item-title"
+                                    },
+                                    [
+                                      _vm._v(
+                                        _vm._s(_vm.order.persons.length) +
+                                          " adult"
+                                      )
+                                    ]
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "p",
+                                    {
+                                      staticClass:
+                                        "theme-sidebar-section-charges-item-price"
+                                    },
+                                    [
+                                      _vm._v(
+                                        "Rp " +
+                                          _vm._s(
+                                            (
+                                              _vm.plan.price *
+                                              _vm.order.persons.length
+                                            ).toLocaleString()
+                                          )
+                                      )
+                                    ]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "li",
+                                {
+                                  staticClass:
+                                    "theme-sidebar-section-charges-item"
+                                },
+                                [
+                                  _c(
+                                    "h5",
+                                    {
+                                      staticClass:
+                                        "theme-sidebar-section-charges-item-title"
+                                    },
+                                    [_vm._v("Discount")]
+                                  ),
+                                  _vm._v(" "),
+                                  _c("p", {
+                                    staticClass:
+                                      "theme-sidebar-section-charges-item-subtitle"
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "p",
+                                    {
+                                      staticClass:
+                                        "theme-sidebar-section-charges-item-price"
+                                    },
+                                    [
+                                      _vm._v(
+                                        "- " + _vm._s(_vm.plan.discount) + "%"
+                                      )
+                                    ]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _vm.voucher
+                                ? _c(
+                                    "li",
+                                    {
+                                      staticClass:
+                                        "theme-sidebar-section-charges-item"
+                                    },
+                                    [
+                                      _c(
+                                        "h5",
+                                        {
+                                          staticClass:
+                                            "theme-sidebar-section-charges-item-title"
+                                        },
+                                        [_vm._v("Voucher")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("p", {
+                                        staticClass:
+                                          "theme-sidebar-section-charges-item-subtitle"
+                                      }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "p",
+                                        {
+                                          staticClass:
+                                            "theme-sidebar-section-charges-item-price"
+                                        },
+                                        [
+                                          _vm._v(
+                                            "- Rp " +
+                                              _vm._s(
+                                                _vm.voucher.value.toLocaleString()
+                                              )
+                                          )
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("input", {
+                                        attrs: {
+                                          type: "hidden",
+                                          name: "order[voucher][voucher_id]",
+                                          value: "voucher.id"
+                                        }
+                                      })
+                                    ]
+                                  )
+                                : _vm._e()
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "p",
+                            {
+                              staticClass: "theme-sidebar-section-charges-total"
+                            },
+                            [
+                              _vm._v("Total\n                  "),
+                              _c("span", [
+                                _vm._v(
+                                  "Rp " +
+                                    _vm._s(
+                                      (
+                                        (_vm.plan.price -
+                                          (_vm.plan.price * _vm.plan.discount) /
+                                            100) *
+                                          _vm.order.persons.length -
+                                        (_vm.voucher ? _vm.voucher.value : 0)
+                                      ).toLocaleString()
+                                    )
+                                )
+                              ])
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              staticClass: "theme-sidebar-section-charges-total"
+                            },
+                            [
+                              _c(
+                                "select",
+                                {
+                                  directives: [
+                                    {
+                                      name: "model",
+                                      rawName: "v-model",
+                                      value: _vm.dp,
+                                      expression: "dp"
+                                    }
+                                  ],
+                                  staticClass: "form-control",
+                                  on: {
+                                    change: function($event) {
+                                      var $$selectedVal = Array.prototype.filter
+                                        .call($event.target.options, function(
+                                          o
+                                        ) {
+                                          return o.selected
+                                        })
+                                        .map(function(o) {
+                                          var val =
+                                            "_value" in o ? o._value : o.value
+                                          return val
+                                        })
+                                      _vm.dp = $event.target.multiple
+                                        ? $$selectedVal
+                                        : $$selectedVal[0]
+                                    }
+                                  }
+                                },
+                                [
+                                  _c("option", { attrs: { value: "false" } }, [
+                                    _vm._v("--Angsur Pembayaran--")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("option", { attrs: { value: "true" } }, [
+                                    _vm._v("Ya")
+                                  ])
+                                ]
+                              )
+                            ]
+                          )
+                        ]
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _vm._m(4)
+                  ])
+                ])
+              : _vm._e()
           ]
         )
       ])
@@ -51431,7 +52931,7 @@ var staticRenderFns = [
         }
       },
       [
-        _vm._v("Flight Details  \n                        "),
+        _vm._v("Flight Details  \n                          "),
         _c("i", { staticClass: "fa fa-angle-down" })
       ]
     )
@@ -51440,531 +52940,195 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "collapse _pt-20", attrs: { id: "FlightPaymentDetails" } },
-      [
-        _c(
-          "div",
-          { staticClass: "theme-search-results-item-flight-detail-items" },
-          [
-            _c(
-              "div",
-              { staticClass: "theme-search-results-item-flight-details" },
-              [
-                _c("div", { staticClass: "row" }, [
-                  _c("div", { staticClass: "col-md-3 " }, [
+    return _c("div", { staticClass: "col-md-9 " }, [
+      _c(
+        "div",
+        { staticClass: "theme-search-results-item-flight-details-schedule" },
+        [
+          _c(
+            "ul",
+            {
+              staticClass:
+                "theme-search-results-item-flight-details-schedule-list"
+            },
+            [
+              _c("li", [
+                _c("i", {
+                  staticClass:
+                    "fa fa-plane theme-search-results-item-flight-details-schedule-icon"
+                }),
+                _vm._v(" "),
+                _c("div", {
+                  staticClass:
+                    "theme-search-results-item-flight-details-schedule-dots"
+                }),
+                _vm._v(" "),
+                _c(
+                  "p",
+                  {
+                    staticClass:
+                      "theme-search-results-item-flight-details-schedule-date"
+                  },
+                  [_vm._v("Tue, May 23")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "theme-search-results-item-flight-details-schedule-time"
+                  },
+                  [
                     _c(
-                      "div",
+                      "span",
                       {
                         staticClass:
-                          "theme-search-results-item-flight-details-info"
+                          "theme-search-results-item-flight-details-schedule-time-item"
                       },
                       [
-                        _c(
-                          "h5",
-                          {
-                            staticClass:
-                              "theme-search-results-item-flight-details-info-title"
-                          },
-                          [_vm._v("Return")]
+                        _vm._v(
+                          "06:50\n                                            "
                         ),
-                        _vm._v(" "),
-                        _c(
-                          "p",
-                          {
-                            staticClass:
-                              "theme-search-results-item-flight-details-info-date"
-                          },
-                          [_vm._v("Tue, May 23")]
+                        _c("span", [_vm._v("am")])
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "span",
+                      {
+                        staticClass:
+                          "theme-search-results-item-flight-details-schedule-time-separator"
+                      },
+                      [_vm._v("—")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "span",
+                      {
+                        staticClass:
+                          "theme-search-results-item-flight-details-schedule-time-item"
+                      },
+                      [
+                        _vm._v(
+                          "09:20\n                                            "
                         ),
-                        _vm._v(" "),
-                        _c(
-                          "p",
-                          {
-                            staticClass:
-                              "theme-search-results-item-flight-details-info-cities"
-                          },
-                          [_vm._v("New York → London")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "p",
-                          {
-                            staticClass:
-                              "theme-search-results-item-flight-details-info-fly-time"
-                          },
-                          [_vm._v("14h 30m")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "p",
-                          {
-                            staticClass:
-                              "theme-search-results-item-flight-details-info-stops"
-                          },
-                          [_vm._v("non-stop")]
-                        )
+                        _c("span", [_vm._v("pm")])
                       ]
                     )
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col-md-9 " }, [
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "p",
+                  {
+                    staticClass:
+                      "theme-search-results-item-flight-details-schedule-fly-time"
+                  },
+                  [_vm._v("14h 30m")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    staticClass:
+                      "theme-search-results-item-flight-details-schedule-destination"
+                  },
+                  [
                     _c(
                       "div",
                       {
                         staticClass:
-                          "theme-search-results-item-flight-details-schedule"
+                          "theme-search-results-item-flight-details-schedule-destination-item"
                       },
                       [
                         _c(
-                          "ul",
+                          "p",
                           {
                             staticClass:
-                              "theme-search-results-item-flight-details-schedule-list"
+                              "theme-search-results-item-flight-details-schedule-destination-title"
                           },
                           [
-                            _c("li", [
-                              _c("i", {
-                                staticClass:
-                                  "fa fa-plane theme-search-results-item-flight-details-schedule-icon"
-                              }),
-                              _vm._v(" "),
-                              _c("div", {
-                                staticClass:
-                                  "theme-search-results-item-flight-details-schedule-dots"
-                              }),
-                              _vm._v(" "),
-                              _c(
-                                "p",
-                                {
-                                  staticClass:
-                                    "theme-search-results-item-flight-details-schedule-date"
-                                },
-                                [_vm._v("Tue, May 23")]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                {
-                                  staticClass:
-                                    "theme-search-results-item-flight-details-schedule-time"
-                                },
-                                [
-                                  _c(
-                                    "span",
-                                    {
-                                      staticClass:
-                                        "theme-search-results-item-flight-details-schedule-time-item"
-                                    },
-                                    [
-                                      _vm._v(
-                                        "06:50\n                                          "
-                                      ),
-                                      _c("span", [_vm._v("am")])
-                                    ]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "span",
-                                    {
-                                      staticClass:
-                                        "theme-search-results-item-flight-details-schedule-time-separator"
-                                    },
-                                    [_vm._v("—")]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "span",
-                                    {
-                                      staticClass:
-                                        "theme-search-results-item-flight-details-schedule-time-item"
-                                    },
-                                    [
-                                      _vm._v(
-                                        "09:20\n                                          "
-                                      ),
-                                      _c("span", [_vm._v("pm")])
-                                    ]
-                                  )
-                                ]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "p",
-                                {
-                                  staticClass:
-                                    "theme-search-results-item-flight-details-schedule-fly-time"
-                                },
-                                [_vm._v("14h 30m")]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                {
-                                  staticClass:
-                                    "theme-search-results-item-flight-details-schedule-destination"
-                                },
-                                [
-                                  _c(
-                                    "div",
-                                    {
-                                      staticClass:
-                                        "theme-search-results-item-flight-details-schedule-destination-item"
-                                    },
-                                    [
-                                      _c(
-                                        "p",
-                                        {
-                                          staticClass:
-                                            "theme-search-results-item-flight-details-schedule-destination-title"
-                                        },
-                                        [
-                                          _c("b", [_vm._v("LTN")]),
-                                          _vm._v(
-                                            "Luton\n                                          "
-                                          )
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "p",
-                                        {
-                                          staticClass:
-                                            "theme-search-results-item-flight-details-schedule-destination-city"
-                                        },
-                                        [_vm._v("London")]
-                                      )
-                                    ]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "div",
-                                    {
-                                      staticClass:
-                                        "theme-search-results-item-flight-details-schedule-destination-separator"
-                                    },
-                                    [_c("span", [_vm._v("→")])]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "div",
-                                    {
-                                      staticClass:
-                                        "theme-search-results-item-flight-details-schedule-destination-item"
-                                    },
-                                    [
-                                      _c(
-                                        "p",
-                                        {
-                                          staticClass:
-                                            "theme-search-results-item-flight-details-schedule-destination-title"
-                                        },
-                                        [
-                                          _c("b", [_vm._v("LGA")]),
-                                          _vm._v(
-                                            "LaGuardia\n                                          "
-                                          )
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "p",
-                                        {
-                                          staticClass:
-                                            "theme-search-results-item-flight-details-schedule-destination-city"
-                                        },
-                                        [_vm._v("New York")]
-                                      )
-                                    ]
-                                  )
-                                ]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "ul",
-                                {
-                                  staticClass:
-                                    "theme-search-results-item-flight-details-schedule-features"
-                                },
-                                [
-                                  _c("li", [_vm._v("6980 American")]),
-                                  _vm._v(" "),
-                                  _c("li", [_vm._v("Wide-body jet")]),
-                                  _vm._v(" "),
-                                  _c("li", [_vm._v("Boeing 777-300ER")])
-                                ]
-                              )
-                            ])
+                            _c("b", [_vm._v("LTN")]),
+                            _vm._v(
+                              "Luton\n                                            "
+                            )
                           ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "p",
+                          {
+                            staticClass:
+                              "theme-search-results-item-flight-details-schedule-destination-city"
+                          },
+                          [_vm._v("London")]
                         )
                       ]
-                    )
-                  ])
-                ])
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "theme-search-results-item-flight-details" },
-              [
-                _c("div", { staticClass: "row" }, [
-                  _c("div", { staticClass: "col-md-3 " }, [
+                    ),
+                    _vm._v(" "),
                     _c(
                       "div",
                       {
                         staticClass:
-                          "theme-search-results-item-flight-details-info"
+                          "theme-search-results-item-flight-details-schedule-destination-separator"
                       },
-                      [
-                        _c(
-                          "h5",
-                          {
-                            staticClass:
-                              "theme-search-results-item-flight-details-info-title"
-                          },
-                          [_vm._v("Return")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "p",
-                          {
-                            staticClass:
-                              "theme-search-results-item-flight-details-info-date"
-                          },
-                          [_vm._v("Tue, May 23")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "p",
-                          {
-                            staticClass:
-                              "theme-search-results-item-flight-details-info-cities"
-                          },
-                          [_vm._v("New York → London")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "p",
-                          {
-                            staticClass:
-                              "theme-search-results-item-flight-details-info-fly-time"
-                          },
-                          [_vm._v("14h 30m")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "p",
-                          {
-                            staticClass:
-                              "theme-search-results-item-flight-details-info-stops"
-                          },
-                          [_vm._v("non-stop")]
-                        )
-                      ]
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "col-md-9 " }, [
+                      [_c("span", [_vm._v("→")])]
+                    ),
+                    _vm._v(" "),
                     _c(
                       "div",
                       {
                         staticClass:
-                          "theme-search-results-item-flight-details-schedule"
+                          "theme-search-results-item-flight-details-schedule-destination-item"
                       },
                       [
                         _c(
-                          "ul",
+                          "p",
                           {
                             staticClass:
-                              "theme-search-results-item-flight-details-schedule-list"
+                              "theme-search-results-item-flight-details-schedule-destination-title"
                           },
                           [
-                            _c("li", [
-                              _c("i", {
-                                staticClass:
-                                  "fa fa-plane theme-search-results-item-flight-details-schedule-icon"
-                              }),
-                              _vm._v(" "),
-                              _c("div", {
-                                staticClass:
-                                  "theme-search-results-item-flight-details-schedule-dots"
-                              }),
-                              _vm._v(" "),
-                              _c(
-                                "p",
-                                {
-                                  staticClass:
-                                    "theme-search-results-item-flight-details-schedule-date"
-                                },
-                                [_vm._v("Tue, May 23")]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                {
-                                  staticClass:
-                                    "theme-search-results-item-flight-details-schedule-time"
-                                },
-                                [
-                                  _c(
-                                    "span",
-                                    {
-                                      staticClass:
-                                        "theme-search-results-item-flight-details-schedule-time-item"
-                                    },
-                                    [
-                                      _vm._v(
-                                        "06:50\n                                          "
-                                      ),
-                                      _c("span", [_vm._v("am")])
-                                    ]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "span",
-                                    {
-                                      staticClass:
-                                        "theme-search-results-item-flight-details-schedule-time-separator"
-                                    },
-                                    [_vm._v("—")]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "span",
-                                    {
-                                      staticClass:
-                                        "theme-search-results-item-flight-details-schedule-time-item"
-                                    },
-                                    [
-                                      _vm._v(
-                                        "09:20\n                                          "
-                                      ),
-                                      _c("span", [_vm._v("pm")])
-                                    ]
-                                  )
-                                ]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "p",
-                                {
-                                  staticClass:
-                                    "theme-search-results-item-flight-details-schedule-fly-time"
-                                },
-                                [_vm._v("14h 30m")]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                {
-                                  staticClass:
-                                    "theme-search-results-item-flight-details-schedule-destination"
-                                },
-                                [
-                                  _c(
-                                    "div",
-                                    {
-                                      staticClass:
-                                        "theme-search-results-item-flight-details-schedule-destination-item"
-                                    },
-                                    [
-                                      _c(
-                                        "p",
-                                        {
-                                          staticClass:
-                                            "theme-search-results-item-flight-details-schedule-destination-title"
-                                        },
-                                        [
-                                          _c("b", [_vm._v("LTN")]),
-                                          _vm._v(
-                                            "Luton\n                                          "
-                                          )
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "p",
-                                        {
-                                          staticClass:
-                                            "theme-search-results-item-flight-details-schedule-destination-city"
-                                        },
-                                        [_vm._v("London")]
-                                      )
-                                    ]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "div",
-                                    {
-                                      staticClass:
-                                        "theme-search-results-item-flight-details-schedule-destination-separator"
-                                    },
-                                    [_c("span", [_vm._v("→")])]
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "div",
-                                    {
-                                      staticClass:
-                                        "theme-search-results-item-flight-details-schedule-destination-item"
-                                    },
-                                    [
-                                      _c(
-                                        "p",
-                                        {
-                                          staticClass:
-                                            "theme-search-results-item-flight-details-schedule-destination-title"
-                                        },
-                                        [
-                                          _c("b", [_vm._v("LGA")]),
-                                          _vm._v(
-                                            "LaGuardia\n                                          "
-                                          )
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "p",
-                                        {
-                                          staticClass:
-                                            "theme-search-results-item-flight-details-schedule-destination-city"
-                                        },
-                                        [_vm._v("New York")]
-                                      )
-                                    ]
-                                  )
-                                ]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "ul",
-                                {
-                                  staticClass:
-                                    "theme-search-results-item-flight-details-schedule-features"
-                                },
-                                [
-                                  _c("li", [_vm._v("6980 American")]),
-                                  _vm._v(" "),
-                                  _c("li", [_vm._v("Wide-body jet")]),
-                                  _vm._v(" "),
-                                  _c("li", [_vm._v("Boeing 777-300ER")])
-                                ]
-                              )
-                            ])
+                            _c("b", [_vm._v("LGA")]),
+                            _vm._v(
+                              "LaGuardia\n                                            "
+                            )
                           ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "p",
+                          {
+                            staticClass:
+                              "theme-search-results-item-flight-details-schedule-destination-city"
+                          },
+                          [_vm._v("New York")]
                         )
                       ]
                     )
-                  ])
-                ])
-              ]
-            )
-          ]
-        )
-      ]
-    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "ul",
+                  {
+                    staticClass:
+                      "theme-search-results-item-flight-details-schedule-features"
+                  },
+                  [
+                    _c("li", [_vm._v("6980 American")]),
+                    _vm._v(" "),
+                    _c("li", [_vm._v("Wide-body jet")]),
+                    _vm._v(" "),
+                    _c("li", [_vm._v("Boeing 777-300ER")])
+                  ]
+                )
+              ])
+            ]
+          )
+        ]
+      )
+    ])
   },
   function() {
     var _vm = this
@@ -52009,263 +53173,6 @@ var staticRenderFns = [
               _vm._v("Lucy Doe, lucy_kitty_11@gmail.com, +1 732 929 0466")
             ])
           ])
-        ])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass: "collapse theme-payment-page-sections-item-new-extend",
-        attrs: { id: "AddNewTraveler" }
-      },
-      [
-        _c("div", { staticClass: "theme-payment-page-form" }, [
-          _c("h3", { staticClass: "theme-payment-page-form-title" }, [
-            _vm._v("Passenger 1")
-          ]),
-          _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "row row-col-gap", attrs: { "data-gutter": "20" } },
-            [
-              _c("div", { staticClass: "col-md-6 " }, [
-                _c(
-                  "div",
-                  {
-                    staticClass: "row row-col-gap",
-                    attrs: { "data-gutter": "10" }
-                  },
-                  [
-                    _c("div", { staticClass: "col-md-6 " }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass: "theme-payment-page-form-item form-group"
-                        },
-                        [
-                          _c("i", { staticClass: "fa fa-angle-down" }),
-                          _vm._v(" "),
-                          _c("select", { staticClass: "form-control" }, [
-                            _c("option", [_vm._v("Month")])
-                          ])
-                        ]
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-md-3 " }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass: "theme-payment-page-form-item form-group"
-                        },
-                        [
-                          _c("i", { staticClass: "fa fa-angle-down" }),
-                          _vm._v(" "),
-                          _c("select", { staticClass: "form-control" }, [
-                            _c("option", [_vm._v("Day")])
-                          ])
-                        ]
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "col-md-3 " }, [
-                      _c(
-                        "div",
-                        {
-                          staticClass: "theme-payment-page-form-item form-group"
-                        },
-                        [
-                          _c("i", { staticClass: "fa fa-angle-down" }),
-                          _vm._v(" "),
-                          _c("select", { staticClass: "form-control" }, [
-                            _c("option", [_vm._v("Year")])
-                          ])
-                        ]
-                      )
-                    ])
-                  ]
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-6 " }, [
-                _c(
-                  "div",
-                  { staticClass: "theme-payment-page-form-item form-group" },
-                  [
-                    _c("i", { staticClass: "fa fa-angle-down" }),
-                    _vm._v(" "),
-                    _c("select", { staticClass: "form-control" }, [
-                      _c("option", [_vm._v("Gender")]),
-                      _vm._v(" "),
-                      _c("option", [_vm._v("Male")]),
-                      _vm._v(" "),
-                      _c("option", [_vm._v("Female")])
-                    ])
-                  ]
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-6 " }, [
-                _c(
-                  "div",
-                  { staticClass: "theme-payment-page-form-item form-group" },
-                  [
-                    _c("input", {
-                      staticClass: "form-control",
-                      attrs: { type: "text", placeholder: "First Name" }
-                    })
-                  ]
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-6 " }, [
-                _c(
-                  "div",
-                  { staticClass: "theme-payment-page-form-item form-group" },
-                  [
-                    _c("input", {
-                      staticClass: "form-control",
-                      attrs: { type: "text", placeholder: "Last Name" }
-                    })
-                  ]
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-6 " }, [
-                _c(
-                  "div",
-                  { staticClass: "theme-payment-page-form-item form-group" },
-                  [
-                    _c("input", {
-                      staticClass: "form-control",
-                      attrs: { type: "text", placeholder: "Passport Serial" }
-                    })
-                  ]
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-md-6 " }, [
-                _c(
-                  "div",
-                  { staticClass: "theme-payment-page-form-item form-group" },
-                  [
-                    _c("i", { staticClass: "fa fa-angle-down" }),
-                    _vm._v(" "),
-                    _c("select", { staticClass: "form-control" }, [
-                      _c("option", [_vm._v("Citizenship")])
-                    ])
-                  ]
-                )
-              ])
-            ]
-          ),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              staticClass: "btn btn-danger pull-right",
-              attrs: { type: "button" }
-            },
-            [
-              _c("i", { staticClass: "fa fa-times" }),
-              _vm._v(" Remove Passenger")
-            ]
-          )
-        ])
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "theme-payment-page-sections-item" }, [
-      _c("div", { staticClass: "theme-payment-page-booking" }, [
-        _c("div", { staticClass: "theme-payment-page-booking-header" }, [
-          _c("h3", { staticClass: "theme-payment-page-booking-title" }, [
-            _vm._v("Total")
-          ]),
-          _vm._v(" "),
-          _c("p", { staticClass: "theme-payment-page-booking-subtitle" }, [
-            _vm._v(
-              "By clicking book now button you agree with terms and conditionals and money back gurantee. Thank you for trusting our service."
-            )
-          ]),
-          _vm._v(" "),
-          _c("p", { staticClass: "theme-payment-page-booking-price" }, [
-            _vm._v("$670.00")
-          ])
-        ]),
-        _vm._v(" "),
-        _c(
-          "a",
-          {
-            staticClass: "btn _tt-uc btn-primary-inverse btn-lg btn-block",
-            attrs: { href: "#" }
-          },
-          [_vm._v("Book Now")]
-        )
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "theme-sidebar-section _mb-10" }, [
-      _c("h5", { staticClass: "theme-sidebar-section-title" }, [
-        _vm._v("Charges")
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "theme-sidebar-section-charges" }, [
-        _c("ul", { staticClass: "theme-sidebar-section-charges-list" }, [
-          _c("li", { staticClass: "theme-sidebar-section-charges-item" }, [
-            _c(
-              "h5",
-              { staticClass: "theme-sidebar-section-charges-item-title" },
-              [_vm._v("1 adult")]
-            ),
-            _vm._v(" "),
-            _c(
-              "p",
-              { staticClass: "theme-sidebar-section-charges-item-subtitle" },
-              [_vm._v("Economy")]
-            ),
-            _vm._v(" "),
-            _c(
-              "p",
-              { staticClass: "theme-sidebar-section-charges-item-price" },
-              [_vm._v("$615.00")]
-            )
-          ]),
-          _vm._v(" "),
-          _c("li", { staticClass: "theme-sidebar-section-charges-item" }, [
-            _c(
-              "h5",
-              { staticClass: "theme-sidebar-section-charges-item-title" },
-              [_vm._v("Taxes, Fees & Surcharges")]
-            ),
-            _vm._v(" "),
-            _c("p", {
-              staticClass: "theme-sidebar-section-charges-item-subtitle"
-            }),
-            _vm._v(" "),
-            _c(
-              "p",
-              { staticClass: "theme-sidebar-section-charges-item-price" },
-              [_vm._v("$55.00")]
-            )
-          ])
-        ]),
-        _vm._v(" "),
-        _c("p", { staticClass: "theme-sidebar-section-charges-total" }, [
-          _vm._v("Total\n                "),
-          _c("span", [_vm._v("$670.00")])
         ])
       ])
     ])

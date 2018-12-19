@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Laravel\Passport\HasApiTokens;
 use Backpack\CRUD\CrudTrait; // <------------------------------- this one
 use Spatie\Permission\Traits\HasRoles;// <---------------------- and this one
 use Illuminate\Notifications\Notifiable;
@@ -12,6 +13,7 @@ class User extends Authenticatable
 {
     use CrudTrait; // <----- this
     use HasRoles; // <------ and this
+    use HasApiTokens;
     use Notifiable;
 
     /**
@@ -31,4 +33,8 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function orders(){
+        return $this->hasMany('App\Models\Order');
+    }
 }

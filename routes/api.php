@@ -17,6 +17,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::group(['namespace'=>'API','middleware'=>'auth:api'],function(){
+	Route::post('payment/checkout','PaymentController@checkout');
+});
+
 Route::group(['namespace'=>'API'],function(){
 	Route::resources([
 		"plans"=>"PlanController",
