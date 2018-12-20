@@ -135,6 +135,8 @@ class NotificationController extends Controller
             $transaksi = Transaction::find($order_id);
             $transaction_status = TransactionHasStatus::where('transaction_id',$transaksi->id)->first();
             $transaction_status->transaction_status_id = 2;
+            $transaction_status->update();
+            
             echo "Transaction order_id: " . $order_id ." successfully transfered using " . $type;
         } 
         else if($transaction == 'pending'){

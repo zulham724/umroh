@@ -14,14 +14,9 @@ class PaymentsTableSeeder extends Seeder
     {
         $data = [
         	[
-        		"name"=>"transfer BNI"
-        	],
-        	[
-        		"name"=>"transfer BCA"
-        	],
-        	[
-        		"name"=>"transfer Mandiri"
-        	],
+                "id"=>1,
+        		"name"=>"Bank Transfer"
+        	]
         ];
 
         Payment::insert($data);
