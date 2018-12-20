@@ -13,6 +13,7 @@
 	<a href="#"><i class="fa fa-opencart"></i> <span>Store</span> <i class="fa fa-angle-left pull-right"></i></a>
 	<ul class="treeview-menu"> 
 		<li><a href='{{ backpack_url('order') }}'><i class='fa fa-shopping-cart'></i> <span>Orders</span></a></li>
+		<li><a href='{{ backpack_url('transaction') }}'><i class='fa fa-tag'></i> <span>Transactions</span></a></li>
 		<li><a href='{{ backpack_url('person') }}'><i class='fa fa-user-secret'></i> <span>Persons</span></a></li>
 		<li><a href='{{ backpack_url('voucher') }}'><i class='fa fa-vcard'></i> <span>Vouchers</span></a></li>
 		<li><a href='{{ backpack_url('payment') }}'><i class='fa fa-cc-mastercard'></i> <span>Payments</span></a></li>
@@ -30,6 +31,13 @@
     <ul class="treeview-menu">
       <li><a href='{{ backpack_url('schedule') }}'><i class='fa fa-calendar-check-o'></i> <span>Schedules</span></a></li>
 	  <li><a href='{{ backpack_url('scheduledetail') }}'><i class='fa fa-check-square-o'></i> <span>Schedule Details</span></a></li>
+    </ul>
+</li>
+<li class="treeview">
+    <a href="#"><i class="fa fa-cogs"></i> <span>Status</span> <i class="fa fa-angle-left pull-right"></i></a>
+    <ul class="treeview-menu">
+      <li><a href='{{ backpack_url('orderstatus') }}'><i class='fa fa-tag'></i> <span>Order Statuses</span></a></li>
+      <li><a href='{{ backpack_url('transactionstatus') }}'><i class='fa fa-tag'></i> <span>Transaction Statuses</span></a></li>
     </ul>
 </li>
 <li class="treeview">
@@ -58,9 +66,5 @@
 
 {{-- <li><a href='{{ backpack_url('planhasschedule') }}'><i class='fa fa-tag'></i> <span>Plan Has Schedules</span></a></li> --}}
 {{-- <li><a href='{{ backpack_url('planhasvoucher') }}'><i class='fa fa-tag'></i> <span>Plan Has Vouchers</span></a></li> --}}
-
-<li><a href='{{ backpack_url('transaction') }}'><i class='fa fa-tag'></i> <span>Transactions</span></a></li>
-<li><a href='{{ backpack_url('transactionstatus') }}'><i class='fa fa-tag'></i> <span>Transaction Statuses</span></a></li>
-<li><a href='{{ backpack_url('transactionhasstatus') }}'><i class='fa fa-tag'></i> <span>Transaction has statuses</span></a></li>
-<li><a href='{{ backpack_url('orderstatus') }}'><i class='fa fa-tag'></i> <span>Order Statuses</span></a></li>
-<li><a href='{{ backpack_url('orderhasstatus') }}'><i class='fa fa-tag'></i> <span>Order has statuses</span></a></li>
+{{-- <li><a href='{{ backpack_url('transactionhasstatus') }}'><i class='fa fa-tag'></i> <span>Transaction has statuses</span></a></li> --}}
+{{-- <li><a href='{{ backpack_url('orderhasstatus') }}'><i class='fa fa-tag'></i> <span>Order has statuses</span></a></li> --}}
