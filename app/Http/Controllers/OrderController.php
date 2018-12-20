@@ -91,7 +91,8 @@ class OrderController extends Controller
 
         foreach ($orders as $o => $order) {
             foreach ($order['transactions'] as $t => $transaction) {
-                $transaction->transaction_statuses[0] == 'Complete' ? $order->sum_transaction_value = $order->sum_transaction_value += $transaction->value : $order->sum_transaction_value = $order->sum_transaction_value += 0 ;
+                // menjumlahkan transaksi yang id 2 atau complete (telah melakukan transaksi)
+                $transaction->transaction_statuses[0]->id == 2 ? $order->sum_transaction_value = $order->sum_transaction_value += $transaction->value : $order->sum_transaction_value = $order->sum_transaction_value += 0 ;
             }
         }
         return response()->json($orders);

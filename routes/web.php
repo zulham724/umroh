@@ -17,6 +17,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('notification','PaymentController@notification');
 
 Route::group(['middleware'=>'auth'],function(){
 
@@ -32,6 +33,8 @@ Route::group(['middleware'=>'auth'],function(){
 		"orders"=>"OrderController",
 		"transactions"=>"TransactionController"
 	]);
+
+	Route::get('getstatus/{order_id}','PaymentController@getstatus');
 
 });
 

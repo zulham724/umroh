@@ -85,9 +85,13 @@ class TransactionController extends Controller
     }
 
     public function byauth(){
-        $transactions = Transaction::with(['order'=>function($query){
-            $query->where('user_id',Auth::user()->id);
-        }])
+        $transactions = Transaction::
+        with([
+            'order'=>function($query){
+                $query->where('user_id',Auth::user()->id);
+            },
+            'transaction_statuses'
+        ])
         ->whereHas('order',function($query){
             $query->where('user_id',Auth::user()->id);
         })

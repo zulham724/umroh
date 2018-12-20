@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Veritrans_Config;
 use Veritrans_Snap;
 use Veritrans_Notification;
+use Veritrans_Transaction;
 use App\Models\Plan;
 use App\User;
 use App\Models\Person;
@@ -196,7 +197,7 @@ class PaymentController extends Controller
 
         $payload = [
             'transaction_details' => [
-                'order_id'      => $order->id,
+                'order_id'      => $transaction_id,
                 'gross_amount'  => $order->total_amount,
             ],
             'customer_details' => [
@@ -240,6 +241,59 @@ class PaymentController extends Controller
             return view('payments.success',["user"=>$user]);
         } else {
             return abort(404);
+        }
+    }
+
+    public function getstatus($transaction_id){
+        $status = Veritrans_Transaction::status($transaction_id);
+        dd($status);
+    }
+
+    public function notification(){
+
+        $notif = new Veritrans_Notification();
+
+        $transaction = $notif->transaction_status;
+        $type = $notif->payment_type;
+        $order_id = $notif->order_id;
+        $fraud = $notif->fraud_status;
+
+        if ($transaction == 'capture') {
+            // For credit card transaction, we need to check whether transaction is challenge by FDS or not
+            if ($type == 'credit_card'){
+                if($fraud == 'challenge'){
+                    // TODO set payment status in merchant's database to 'Challenge by FDS'
+                    // TODO merchant should decide whether this transaction is authorized or not in MAP
+                    echo "Transaction order_id: " . $order_id ." is challenged by FDS";
+                } 
+                else {
+                    // TODO set payment status in merchant's database to 'Success'
+                    echo "Transaction order_id: " . $order_id ." successfully captured using " . $type;
+                }
+            }
+        }
+        else if ($transaction == 'settlement'){
+            // TODO set payment status in merchant's database to 'Settlement'
+            $transaksi = Transaction::find($order_id);
+            $transaction_status = TransactionHasStatus::where('transaction_id',$transaksi->id)->first();
+            $transaction_status->transaction_status_id = 2;
+            echo "Transaction order_id: " . $order_id ." successfully transfered using " . $type;
+        } 
+        else if($transaction == 'pending'){
+            // TODO set payment status in merchant's database to 'Pending'
+            echo "Waiting customer to finish transaction order_id: " . $order_id . " using " . $type;
+        } 
+        else if ($transaction == 'deny') {
+            // TODO set payment status in merchant's database to 'Denied'
+            echo "Payment using " . $type . " for transaction order_id: " . $order_id . " is denied.";
+        }
+        else if ($transaction == 'expire') {
+            // TODO set payment status in merchant's database to 'expire'
+            echo "Payment using " . $type . " for transaction order_id: " . $order_id . " is expired.";
+        }
+        else if ($transaction == 'cancel') {
+            // TODO set payment status in merchant's database to 'Denied'
+            echo "Payment using " . $type . " for transaction order_id: " . $order_id . " is canceled.";
         }
     }
 

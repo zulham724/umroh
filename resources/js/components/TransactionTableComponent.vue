@@ -19,7 +19,8 @@
                     {title:'Transaction ID',data:'id'},
                     {title:'Amount',data:function(val){
                         return "Rp "+val.order.total_amount.toLocaleString();
-                    }}
+                    }},
+                    {title:'Staus',data:'transaction_statuses[0].description'},
                 ]
             });
         }

@@ -86871,7 +86871,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             },
             columns: [{ title: 'Order ID', data: 'order.id' }, { title: 'Transaction ID', data: 'id' }, { title: 'Amount', data: function data(val) {
                     return "Rp " + val.order.total_amount.toLocaleString();
-                } }]
+                } }, { title: 'Staus', data: 'transaction_statuses[0].description' }]
         });
     }
 });
