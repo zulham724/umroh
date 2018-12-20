@@ -17,7 +17,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('notification','PaymentController@notification');
+Route::get('notification/handling','NotificationController@handling');
 
 Route::group(['middleware'=>'auth'],function(){
 
