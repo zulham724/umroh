@@ -1,7 +1,9 @@
 <template>
-    <table class="table table-striped" id="table">
-        
-    </table>
+    <div class="table-responsive">
+        <table class="table table-striped" id="table">
+            
+        </table>
+    </div>
 </template>
 
 <script>

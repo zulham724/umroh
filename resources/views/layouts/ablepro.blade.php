@@ -231,7 +231,7 @@
                   </li>
                   <li class="treeview">
                      <a class="waves-effect waves-dark" href="{{ url('/') }}">
-                     <i class="fas fa-shopping-cart"></i><span> Pesan Umroh</span>
+                     <i class="fas fa-shopping-cart"></i><span> Pesan Baru</span>
                      </a>                
                   </li>
                </ul>
