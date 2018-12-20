@@ -12,7 +12,7 @@
 	        <i class="fa fa-check fa-5x" style="color:#0fad00"></i>
 	        <h3>Dear, {{ $user->name }}</h3>
 	        <p style="font-size:20px;color:#5C5C5C;">
-	        	Terimakasih telah melakukan pembayaran. Silahkan cek status pembayaran dan tagihannya <a href="{{ route('dashboard') }}">disini</a>. Atau cek Email anda.
+	        	Terimakasih telah melakukan pemesanan. Silahkan cek status pembayaran dan tagihannya <a href="{{ route('dashboard') }}">disini</a>. Atau cek Email anda.
 			</p>
 	    	<br><br>
         </div>

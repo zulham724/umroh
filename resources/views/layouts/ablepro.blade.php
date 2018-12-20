@@ -215,18 +215,23 @@
                <ul class="sidebar-menu">
                   <li class="nav-level">Navigation</li>
                   <li class="active treeview">
-                     <a class="waves-effect waves-dark" href="index.html">
+                     <a class="waves-effect waves-dark" href="{{ route('dashboard') }}">
                      <i class="icon-speedometer"></i><span> Dashboard</span>
                      </a>                
                   </li>
                   <li class="treeview">
-                     <a class="waves-effect waves-dark" href="index.html">
+                     <a class="waves-effect waves-dark" href="{{ route('orders.index') }}">
                      <i class="fas fa-people-carry"></i><span> Pesanan</span>
                      </a>                
                   </li>
                   <li class="treeview">
-                     <a class="waves-effect waves-dark" href="index.html">
+                     <a class="waves-effect waves-dark" href="{{ route('transactions.index') }}">
                      <i class="fas fa-money-bill"></i><span> Transaksi</span>
+                     </a>                
+                  </li>
+                  <li class="treeview">
+                     <a class="waves-effect waves-dark" href="{{ url('/') }}">
+                     <i class="fas fa-shopping-cart"></i><span> Pesan Umroh</span>
                      </a>                
                   </li>
                </ul>

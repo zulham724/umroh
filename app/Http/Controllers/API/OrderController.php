@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Order;
 
@@ -14,16 +15,6 @@ class OrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        return view('orders.index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
     {
         //
     }
@@ -51,17 +42,6 @@ class OrderController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -84,16 +64,4 @@ class OrderController extends Controller
         //
     }
 
-    public function byauth(){
-        $orders = Order::
-        with('plan','schedule','transactions.transaction_statuses','order_statuses')
-        ->where('user_id',Auth::user()->id)->get();
-
-        foreach ($orders as $o => $order) {
-            foreach ($order['transactions'] as $t => $transaction) {
-                $transaction->transaction_statuses[0] == 'Complete' ? $order->sum_transaction_value = $order->sum_transaction_value += $transaction->value : $order->sum_transaction_value = $order->sum_transaction_value += 0 ;
-            }
-        }
-        return response()->json($orders);
-    }
 }

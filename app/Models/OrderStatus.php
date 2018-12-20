@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\CrudTrait;
 
-class Transaction extends Model
+class OrderStatus extends Model
 {
     use CrudTrait;
 
@@ -15,11 +15,11 @@ class Transaction extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'transactions';
+    protected $table = 'order_statuses';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
-    protected $guarded = ['id'];
-    // protected $fillable = [];
+    // protected $guarded = ['id'];
+    protected $fillable = [];
     // protected $hidden = [];
     // protected $dates = [];
 
@@ -34,13 +34,7 @@ class Transaction extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function order(){
-        return $this->belongsTo('App\Models\Order');
-    }
 
-    public function transaction_statuses(){
-        return $this->belongsToMany('App\Models\TransactionStatus','transaction_has_statuses','transaction_id','transaction_status_id');
-    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES

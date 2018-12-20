@@ -9,6 +9,8 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 window.Swal = require('sweetalert2')
+import $ from 'jquery';
+import 'datatables.net-bs4';
 
 /**
  * The following block of code may be used to automatically register your
@@ -21,6 +23,8 @@ window.Swal = require('sweetalert2')
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
 Vue.component('payment-detail-component', require('./components/PaymentDetail.vue'));
 Vue.component('chat-component', require('./components/ChatComponent.vue'));
+Vue.component('order-table-component', require('./components/OrderTableComponent.vue'));
+Vue.component('transaction-table-component', require('./components/TransactionTableComponent.vue'));
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))

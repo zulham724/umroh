@@ -34,7 +34,21 @@ class Order extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
+    public function plan(){
+        return $this->belongsTo('App\Models\Plan');
+    }
 
+    public function schedule(){
+        return $this->belongsTo('App\Models\Schedule');
+    }
+
+    public function transactions(){
+        return $this->hasMany('App\Models\Transaction');
+    }
+
+    public function order_statuses(){
+        return $this->belongsToMany('App\Models\OrderStatus','order_has_statuses','order_id','order_status_id');
+    }
     /*
     |--------------------------------------------------------------------------
     | SCOPES

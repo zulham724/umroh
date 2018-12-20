@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Transaction;
+use App\Http\Controllers\Controller;
 
 class TransactionController extends Controller
 {
@@ -14,16 +13,6 @@ class TransactionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        return view('transactions.index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
     {
         //
     }
@@ -51,17 +40,6 @@ class TransactionController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -82,16 +60,5 @@ class TransactionController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function byauth(){
-        $transactions = Transaction::with(['order'=>function($query){
-            $query->where('user_id',Auth::user()->id);
-        }])
-        ->whereHas('order',function($query){
-            $query->where('user_id',Auth::user()->id);
-        })
-        ->get();
-        return response()->json($transactions);
     }
 }

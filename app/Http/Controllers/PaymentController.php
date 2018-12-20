@@ -14,6 +14,8 @@ use App\Models\Schedule;
 use App\Models\Order;
 use App\Models\Transaction;
 use App\Models\Voucher;
+use App\Models\TransactionHasStatus;
+use App\Models\OrderHasStatus;
 
 class PaymentController extends Controller
 {
@@ -177,6 +179,21 @@ class PaymentController extends Controller
         $order->end_at = $schedule->end_at;
         $order->save();
 
+        $order_has_status = new OrderHasStatus;
+        $order_has_status->order_id = $order->id;
+        $order_has_status->order_status_id = 1;
+        $order_has_status->save();
+
+        $transaction = new Transaction;
+        $transaction->order_id = $order->id;
+        $transaction->value = $dp ?? $order->total_amount;
+        $transaction->save();
+
+        $transaction_has_status = new TransactionHasStatus;
+        $transaction_has_status->transaction_id = $transaction->id;
+        $transaction_has_status->transaction_status_id = 1;
+        $transaction_has_status->save();
+
         $payload = [
             'transaction_details' => [
                 'order_id'      => $order->id,
@@ -190,21 +207,18 @@ class PaymentController extends Controller
             ],
             'item_details' => [
                 [
-                    'id'       => $plan->name,
+                    'id'       => $transaction->id,
                     'price'    => $dp ?? $order->total_amount,
                     'quantity' => $order->quantity,
-                    'name'     => $payment_status
+                    'name'     => $plan->name
                 ]
             ]
         ];
 
         $snapToken = Veritrans_Snap::getSnapToken($payload);
-        
-        $transaction = new Transaction;
-        $transaction->order_id = $order->id;
-        $transaction->payment_id = 1;
+
         $transaction->snap_token = $snapToken;
-        $transaction->save();
+        $transaction->update();
 
         return response()->json([
             "snap_token"=>$snapToken,

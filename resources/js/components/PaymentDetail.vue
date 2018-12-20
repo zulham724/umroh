@@ -289,12 +289,12 @@
                     <li class="theme-sidebar-section-charges-item" v-if="voucher">
                       <h5 class="theme-sidebar-section-charges-item-title">Voucher</h5>
                       <p class="theme-sidebar-section-charges-item-subtitle"></p>
-                      <p class="theme-sidebar-section-charges-item-price">- Rp {{ voucher.value.toLocaleString() }}</p>
+                      <p class="theme-sidebar-section-charges-item-price">- Rp {{ voucher.value.toLocaleString() }}/org</p>
                       <input type="hidden" name="order[voucher][voucher_id]" value="voucher.id">
                     </li>
                   </ul>
                   <p class="theme-sidebar-section-charges-total">Total
-                    <span>Rp {{ (((plan.price - ((plan.price*plan.discount)/100))*order.persons.length) - (voucher ? voucher.value : 0)).toLocaleString() }}</span>
+                    <span>Rp {{ (((plan.price - ((plan.price*plan.discount)/100))*order.persons.length) - (voucher ? voucher.value*order.persons.length : 0)).toLocaleString() }}</span>
                   </p>
                   <div class="theme-sidebar-section-charges-total">
                     <select class="form-control" v-model="dp">

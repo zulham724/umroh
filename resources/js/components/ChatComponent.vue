@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div style="bottom:0;
+    position:fixed;
+    z-index: 1030;">
     <beautiful-chat
       :participants="participants"
       :titleImageUrl="titleImageUrl"
