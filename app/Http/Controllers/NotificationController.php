@@ -156,7 +156,7 @@ class NotificationController extends Controller
                 $order_status = OrderHasStatus::where('order_id',$order->id)->first();
                 $order_status->order_status_id = 2;
                 $order_status->update();
-                
+
             }
 
             // echo "Transaction order_id: " . $order_id ." successfully transfered using " . $type;
@@ -167,14 +167,57 @@ class NotificationController extends Controller
         } 
         else if ($transaction == 'deny') {
             // TODO set payment status in merchant's database to 'Denied'
+            $transaksi = Transaction::find($order_id);
+
+            $order = Order::with('transactions.transaction_statuses')->find($transaksi->order_id);
+
+            foreach ($order['transactions'] as $t => $transaction) {
+                // menjumlahkan transaksi yang id 2 atau complete (telah melakukan transaksi)
+                $transaction->transaction_statuses[0]->id == 2 ? $order->sum_transaction_value = $order->sum_transaction_value += $transaction->value : $order->sum_transaction_value = $order->sum_transaction_value += 0 ;
+            }
+
+            if ($order->sum_transaction_value == 0) {
+                $order->delete();
+            } else {
+                $transaksi->delete();
+            }
             // echo "Payment using " . $type . " for transaction order_id: " . $order_id . " is denied.";
         }
         else if ($transaction == 'expire') {
             // TODO set payment status in merchant's database to 'expire'
+            $transaksi = Transaction::find($order_id);
+
+            $order = Order::with('transactions.transaction_statuses')->find($transaksi->order_id);
+
+            foreach ($order['transactions'] as $t => $transaction) {
+                // menjumlahkan transaksi yang id 2 atau complete (telah melakukan transaksi)
+                $transaction->transaction_statuses[0]->id == 2 ? $order->sum_transaction_value = $order->sum_transaction_value += $transaction->value : $order->sum_transaction_value = $order->sum_transaction_value += 0 ;
+            }
+
+            if ($order->sum_transaction_value == 0) {
+                $order->delete();
+            } else {
+                $transaksi->delete();
+            }
+
             // echo "Payment using " . $type . " for transaction order_id: " . $order_id . " is expired.";
         }
         else if ($transaction == 'cancel') {
             // TODO set payment status in merchant's database to 'Denied'
+            $transaksi = Transaction::find($order_id);
+
+            $order = Order::with('transactions.transaction_statuses')->find($transaksi->order_id);
+
+            foreach ($order['transactions'] as $t => $transaction) {
+                // menjumlahkan transaksi yang id 2 atau complete (telah melakukan transaksi)
+                $transaction->transaction_statuses[0]->id == 2 ? $order->sum_transaction_value = $order->sum_transaction_value += $transaction->value : $order->sum_transaction_value = $order->sum_transaction_value += 0 ;
+            }
+
+            if ($order->sum_transaction_value == 0) {
+                $order->delete();
+            } else {
+                $transaksi->delete();
+            }
             // echo "Payment using " . $type . " for transaction order_id: " . $order_id . " is canceled.";
         }
     }
