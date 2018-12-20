@@ -244,9 +244,38 @@ class PaymentController extends Controller
         }
     }
 
-    public function getstatus($transaction_id){
-        $status = Veritrans_Transaction::status($transaction_id);
-        dd($status);
+    public function getstatus($order_id){
+        // $status = Veritrans_Transaction::status($transaction_id);
+        // dd($status);
+
+        $transaksi = Transaction::find($order_id);
+
+        $transaction_status = TransactionHasStatus::where('transaction_id',$transaksi->id)->first();
+        $transaction_status->transaction_status_id = 2;
+        $transaction_status->update();
+
+        $order = Order::with('transactions.transaction_statuses')->find($transaksi->order_id);
+
+        foreach ($order['transactions'] as $t => $transaction) {
+            // menjumlahkan transaksi yang id 2 atau complete (telah melakukan transaksi)
+            $transaction->transaction_statuses[0]->id == 2 ? $order->sum_transaction_value = $order->sum_transaction_value += $transaction->value : $order->sum_transaction_value = $order->sum_transaction_value += 0 ;
+        }
+
+        if ($order->total_amount == $order->sum_transaction_value) {
+
+            $order_status = OrderHasStatus::where('order_id',$order->id)->first();
+            $order_status->order_status_id = 3;
+            $order_status->update();
+
+        } else {
+
+            $order_status = OrderHasStatus::where('order_id',$order->id)->first();
+            $order_status->order_status_id = 2;
+            $order_status->update();
+            
+        }
+
+        return $order;
     }
 
 }
