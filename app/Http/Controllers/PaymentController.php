@@ -197,7 +197,7 @@ class PaymentController extends Controller
 
         $payload = [
             'transaction_details' => [
-                'order_id'      => $transaction_id,
+                'order_id'      => $transaction->id,
                 'gross_amount'  => $order->total_amount,
             ],
             'customer_details' => [
