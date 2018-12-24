@@ -129,7 +129,14 @@
                               <div class="dropdown-divider m-0"></div>
                            </li>
                            <li><a href="lock-screen.html"><i class="icon-lock"></i> Lock Screen</a></li>
-                           <li><a href="#!"><i class="icon-logout"></i> Logout</a></li>
+                           <li>
+                              <a href="{{ route('logout') }}"
+                                       onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();"><i class="icon-logout"></i> Logout</a>
+                              <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                  @csrf
+                              </form>
+                           </li>
                         </ul>
                      </li>
                   </ul>
@@ -208,7 +215,9 @@
                      </a>
                   </li>
                   <li>
-                     <a class="waves-effect waves-dark" href="javascript:void(0)">
+                     <a class="waves-effect waves-dark" href="{{ route('logout') }}"
+                                       onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
                      <i class="icon-logout"></i>
                      <span class="menu-text">Logout</span>
                      <span class="selected"></span>
