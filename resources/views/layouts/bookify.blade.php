@@ -75,7 +75,7 @@
                       @endif
                   @else
                       <li class="nav-item">
-                          <a class="nav-link" href="#"><i class="fa fa-calendar"></i> Dashboard</a>
+                          <a class="nav-link" href="{{ route('home') }}"><i class="fa fa-calendar"></i> Dashboard</a>
                       </li>
                       <li class="nav-item">
 

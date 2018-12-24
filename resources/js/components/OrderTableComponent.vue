@@ -2,8 +2,12 @@
     <v-data-table
         :headers="headers"
         :items="orders"
+        :loading="loading"
         class="elevation-1"
     >
+
+        <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
+
         <template slot="items" slot-scope="props">
             <td>{{ props.item.id }}</td>
             <td class="text-xs-right">{{ props.item.plan.name }}</td>
@@ -25,6 +29,7 @@
     export default {
         data () {
           return {
+            loading:false,
             headers: [
               {
                 text: 'Order ID',
@@ -45,8 +50,10 @@
         },
         mounted() {
             console.log('Component mounted.')
+            this.loading = true;
             axios.get('/orders/byauth').then(res=>{
                 this.orders = res.data;
+                this.loading = false;
             });
         },
         methods:{

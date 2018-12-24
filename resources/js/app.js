@@ -30,6 +30,7 @@ Vue.component('payment-detail-component', require('./components/PaymentDetail.vu
 Vue.component('chat-component', require('./components/ChatComponent.vue'));
 Vue.component('order-table-component', require('./components/OrderTableComponent.vue'));
 Vue.component('transaction-table-component', require('./components/TransactionTableComponent.vue'));
+Vue.component('dashboard-component' ,require('./components/DashboardComponent.vue'));
 
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
