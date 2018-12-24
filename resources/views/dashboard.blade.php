@@ -43,7 +43,7 @@
                         <h5 class="city-cloud">Hot &amp; Sunny</h5>
                      </div>
                      <div>
-                        <h6 class="cloud-date">Yesterday, 12th October 2015</h6>
+                        <h6 class="cloud-date">{{ date("D M Y") }}</h6>
                         <div class="cloud-speed">
                            <i class="icofont icofont-social-cloudapp"></i>
                            <span>57<sup>MPH</sup></span>
