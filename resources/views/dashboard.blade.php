@@ -39,7 +39,7 @@
                <div class="col-lg-7 p-r-0 txt-white climacon-left">
                   <div class="card-block bg-primary">
                      <div class="m-b-5">
-                        <h4 class="dashboard-city">California, USA</h4>
+                        <h4 class="dashboard-city">Semarang, Indonesia</h4>
                         <h5 class="city-cloud">Hot &amp; Sunny</h5>
                      </div>
                      <div>
