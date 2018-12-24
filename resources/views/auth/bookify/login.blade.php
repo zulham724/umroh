@@ -15,45 +15,40 @@
           <div class="col-md-4 col-md-offset-4">
             <div class="theme-login theme-login-white">
               <div class="theme-login-header">
-                <h1 class="theme-login-title">Sign Up</h1>
-                <p class="theme-login-subtitle">Create new Bookify account</p>
+                <h1 class="theme-login-title">Sign In</h1>
+                <p class="theme-login-subtitle">Login into your Bookify account</p>
               </div>
               <div class="theme-login-box">
                 <div class="theme-login-box-inner">
-                  <form class="theme-login-form" method="POST" action="{{ route('register') }}">
-                    @csrf
+                  <form class="theme-login-form">
                     <div class="form-group theme-login-form-group">
-                      <input id="name" type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{ old('name') }}" placeholder="Username" required autofocus>
-
-                      @if ($errors->has('name'))
-                          <span class="invalid-feedback" role="alert">
-                              <strong>{{ $errors->first('name') }}</strong>
-                          </span>
-                      @endif
+                      <input class="form-control" type="text" placeholder="Email Address"/>
                     </div>
                     <div class="form-group theme-login-form-group">
-                      <input id="email" type="email" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" placeholder="Email" required>
-
-                      @if ($errors->has('email'))
-                          <span class="invalid-feedback" role="alert">
-                              <strong>{{ $errors->first('email') }}</strong>
-                          </span>
-                      @endif
+                      <input class="form-control" type="password" placeholder="Password"/>
+                      <p class="help-block">
+                        <a href="pwd-reset-2.html">Forgot password?</a>
+                      </p>
                     </div>
-                    <div class="form-group theme-login-form-group">
-                      <input id="password-confirm" type="password" placeholder="Password" class="form-control" name="password_confirmation" required>
+                    <div class="form-group">
+                      <div class="theme-login-checkbox">
+                        <label class="icheck-label">
+                          <input class="icheck" type="checkbox"/>
+                          <span class="icheck-title">Keep me logged in</span>
+                        </label>
+                      </div>
                     </div>
-                    <button class="btn btn-uc btn-dark btn-block btn-lg" type="submit">Create Account</button>
+                    <a class="btn btn-uc btn-dark btn-block btn-lg" href="#">Sign In</a>
                   </form>
-                  {{-- <div class="theme-login-social-separator">
-                    <p>or sign up with social media</p>
+                  <div class="theme-login-social-separator">
+                    <p>or sign in with social media</p>
                   </div>
                   <div class="theme-login-social-login">
                     <div class="row" data-gutter="10">
                       <div class="col-xs-6">
                         <a class="theme-login-social-login-facebook" href="#">
                           <i class="fa fa-facebook-square"></i>
-                          <span>Sign up with
+                          <span>Sign in with
                             <br/>
                             <b>Facebook</b>
                           </span>
@@ -62,22 +57,22 @@
                       <div class="col-xs-6">
                         <a class="theme-login-social-login-google" href="#">
                           <i class="fa fa-google-plus-circle"></i>
-                          <span>Sign up with
+                          <span>Sign in with
                             <br/>
                             <b>Google</b>
                           </span>
                         </a>
                       </div>
                     </div>
-                  </div> --}}
+                  </div>
                 </div>
                 <div class="theme-login-box-alt">
-                  <p>Already have an account? &nbsp;
-                    <a href="{{ url('login') }}">Sign in.</a>
+                  <p>Don't have an account? &nbsp;
+                    <a href="register-2.html">Sign up.</a>
                   </p>
                 </div>
               </div>
-              <p class="theme-login-terms">By signing up you accept our
+              <p class="theme-login-terms">By logging in you accept our
                 <a href="#">terms of use</a>
                 <br/>and
                 <a href="#">privacy policy</a>.

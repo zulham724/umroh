@@ -66,11 +66,11 @@
                 <ul class="dropdown-menu">
                   @guest
                       <li class="nav-item">
-                          <a class="nav-link" href="{{ route('backpack.auth.login') }}">{{ __('Login') }}</a>
+                          <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
                       </li>
                       @if (Route::has('register'))
                           <li class="nav-item">
-                              <a class="nav-link" href="{{ route('backpack.auth.register') }}">{{ __('Register') }}</a>
+                              <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
                           </li>
                       @endif
                   @else
@@ -79,13 +79,13 @@
                       </li>
                       <li class="nav-item">
 
-                          <a href="{{ route('backpack.auth.logout') }}"
+                          <a href="{{ route('logout') }}"
                              onclick="event.preventDefault();
                                            document.getElementById('logout-form').submit();">
                               {{ __('Logout') }}
                           </a>
 
-                          <form id="logout-form" action="{{ route('backpack.auth.logout') }}" method="POST" style="display: none;">
+                          <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                               @csrf
                           </form>
                       </li>

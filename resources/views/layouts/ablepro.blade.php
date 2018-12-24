@@ -215,7 +215,7 @@
                <ul class="sidebar-menu">
                   <li class="nav-level">Navigation</li>
                   <li class="active treeview">
-                     <a class="waves-effect waves-dark" href="{{ route('dashboard') }}">
+                     <a class="waves-effect waves-dark" href="{{ route('home') }}">
                      <i class="icon-speedometer"></i><span> Dashboard</span>
                      </a>                
                   </li>
