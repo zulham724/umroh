@@ -1,39 +1,90 @@
 <template>
-    <div class="table-responsive">
-        <table class="table table-striped" id="table">
-            
-        </table>
-    </div>
+    <v-data-table
+        :headers="headers"
+        :items="orders"
+        class="elevation-1"
+    >
+        <template slot="items" slot-scope="props">
+            <td>{{ props.item.id }}</td>
+            <td class="text-xs-right">{{ props.item.plan.name }}</td>
+            <td class="text-xs-right">{{ new Date(props.item.schedule.start_at).toDateString() }}</td>
+            <td class="text-xs-right">{{ new Date(props.item.schedule.end_at).toDateString() }}</td>
+            <td class="text-xs-right">Rp {{ props.item.total_amount.toLocaleString() }}</td>
+            <td class="text-xs-right">Rp {{ props.item.sum_transaction_value.toLocaleString() }}</td>
+            <td class="text-xs-right">{{ props.item.order_statuses[0].description }}</td>
+            <td class="justify-center layout px-0">
+                <v-icon color="green darken-2" @click="payment(props.item.id)">
+                    fas fa-money-bill-alt
+                </v-icon>
+            </td>
+        </template>
+    </v-data-table>
 </template>
 
 <script>
     export default {
+        data () {
+          return {
+            headers: [
+              {
+                text: 'Order ID',
+                align: 'left',
+                sortable: false,
+                value: 'order_id'
+              },
+              { text: 'Plan', value: 'plan' },
+              { text: 'Tanggal Berangkat', value: 'start_at' },
+              { text: 'Tanggal Pulang', value: 'end_at' },
+              { text: 'Biaya', value: 'amount' },
+              { text: 'Dibayar', value: 'sum_transaction_value' },
+              { text: 'Status', value: 'status' },
+              { text: 'Pembayaran', value: 'payment' }
+            ],
+            orders: []
+          }
+        },
         mounted() {
             console.log('Component mounted.')
-            $("#table").DataTable({
-                ajax:function(data,callback,settings){
-                    axios.get('/orders/byauth').then(res=>{
-                        callback(res);
-                    });
-                },
-                columns:[
-                    {title:'Order ID',data:'id'},
-                    {title:'Plan',data:'plan.name'},
-                    {title:'Berangkat',data:function(val){
-                        return new Date(val.schedule.start_at).toDateString();
-                    }},
-                    {title:'Pulang',data:function(val){
-                        return new Date(val.schedule.end_at).toDateString();
-                    }},
-                    {title:'Amount',data:function(val){
-                        return "Rp "+val.total_amount.toLocaleString();
-                    }},
-                    {title:'Dibayar',data:function(val){
-                        return "Rp "+val.sum_transaction_value.toLocaleString();
-                    }},
-                    {title:'Status',data:'order_statuses[0].description'}
-                ]
+            axios.get('/orders/byauth').then(res=>{
+                this.orders = res.data;
             });
+        },
+        methods:{
+            payment:function(order_id){
+                let access = {
+                    order_id:order_id
+                }
+
+                axios.post("/payment/installment",access).then(res=>{
+                    snap.pay(res.data.snap_token, {
+                        // Optional
+                        onSuccess: function (result) {
+                            Swal({
+                              title: 'Success!',
+                              text: 'Pembayaran Anda Berhasil',
+                              type: 'info',
+                              showConfirmButton: false,
+                              timer: 3500
+                            });
+                        },
+                        // Optional
+                        onPending: function (result) {
+                            window.location.replace('/payment/success/'+res.data.order.id);
+                        },
+                        // Optional
+                        onError: function (result) {
+                            Swal({
+                              title: 'Oppss!',
+                              text: 'Terjadi Kesalahan',
+                              type: 'error',
+                              showConfirmButton: false,
+                              timer: 1500
+                            });
+                        }
+                    });
+                });
+            }
         }
     }
+
 </script>

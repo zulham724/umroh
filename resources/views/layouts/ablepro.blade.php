@@ -36,6 +36,10 @@
       <link rel="stylesheet" type="text/css" href="{{ asset('ablepro/assets/css/responsive.css') }}" >
       <!--color css-->
       <link rel="stylesheet" type="text/css" href="{{ asset('ablepro/assets/css/color/color-1.min.css') }}"  id="color"/>
+      {{-- vuetify css --}}
+      <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+      <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+      @yield('css')
    </head>
    <body class="sidebar-mini fixed">
       <div class="wrapper">
@@ -480,5 +484,6 @@
       <script type="text/javascript" src="{{ asset('ablepro/assets/js/main.min.js') }}" ></script>
       <script type="text/javascript" src="{{ asset('ablepro/assets/pages/elements.js') }}" ></script>
       <script type="text/javascript" src="{{ asset('ablepro/assets/js/menu.min.js') }}" ></script>
+      @yield('script')
    </body>
 </html>

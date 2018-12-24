@@ -22,15 +22,12 @@
    <!-- Row end -->
    <div class="row">
       <div class="col-md-12">
-         <div class="card">
-            <div class="card-block">
-               <div class="md-card-block">
-                  <order-table-component></order-table-component>
-               </div>
-            </div>
-         </div>
+         <order-table-component></order-table-component>
       </div>
    </div>
 </div>
 <!-- Container-fluid ends -->
+@endsection
+@section('script')
+<script src="{{ !config('services.midtrans.isProduction') ? 'https://app.sandbox.midtrans.com/snap/snap.js' : 'https://app.midtrans.com/snap/snap.js' }}" data-client-key="{{ config('services.midtrans.clientKey') }}"></script>
 @endsection

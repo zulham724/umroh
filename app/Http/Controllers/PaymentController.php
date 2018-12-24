@@ -244,6 +244,62 @@ class PaymentController extends Controller
         }
     }
 
+    public function installment(Request $request){
+        $request->validate([
+            "order_id"=>"required"
+        ]);
+
+        $order = Order::find($request['order_id']);
+        foreach ($order['transactions'] as $t => $transaction) {
+            // menjumlahkan transaksi yang id 2 atau complete (telah melakukan transaksi)
+            $transaction->transaction_statuses[0]->id == 2 ? $order->sum_transaction_value = $order->sum_transaction_value += $transaction->value : $order->sum_transaction_value = $order->sum_transaction_value += 0 ;
+        }
+
+        $paymentvalue = $order->total_amount - $order->sum_transaction_value; 
+
+        $transaction = new Transaction;
+        $transaction->order_id = $order->id;
+        $transaction->value = $paymentvalue;
+        $transaction->save();
+
+        $transaction_has_status = new TransactionHasStatus;
+        $transaction_has_status->transaction_id = $transaction->id;
+        $transaction_has_status->transaction_status_id = 1;
+        $transaction_has_status->save();
+
+        $payload = [
+            'transaction_details' => [
+                'order_id'      => $transaction->id,
+                'gross_amount'  => $order->total_amount,
+            ],
+            'customer_details' => [
+                'first_name'    => Auth::user()->name,
+                'email'         => Auth::user()->email,
+                // 'phone'         => '08888888888',
+                // 'address'       => '',
+            ],
+            'item_details' => [
+                [
+                    'id'       => $transaction->id,
+                    'price'    => $paymentvalue,
+                    'quantity' => 1,
+                    'name'     => "Angsuran"
+                ]
+            ]
+        ];
+
+        $snapToken = Veritrans_Snap::getSnapToken($payload);
+
+        $transaction->snap_token = $snapToken;
+        $transaction->update();
+
+        return response()->json([
+            "snap_token"=>$snapToken,
+            "order"=>$order
+        ]);
+
+    }
+
     public function getstatus($transaction_id){
         $status = Veritrans_Transaction::status($transaction_id);
         dd($status);

@@ -25,6 +25,8 @@ Route::group(['middleware'=>'auth'],function(){
 	Route::post('payment/checkout','PaymentController@checkout')->name('payment.checkout');
 	Route::get('payment/success/{order_id}','PaymentController@success')->name('payment.success');
 
+	Route::post('payment/installment','PaymentController@installment')->name('payment.installment');
+
 	Route::get('orders/byauth','OrderController@byauth');
 	Route::get('transactions/byauth','TransactionController@byauth');
 

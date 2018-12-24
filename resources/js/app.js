@@ -8,7 +8,12 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
-window.Swal = require('sweetalert2')
+window.Vuetify = require('vuetify');
+
+Vue.use(Vuetify);
+
+window.Swal = require('sweetalert2');
+
 import $ from 'jquery';
 import 'datatables.net-bs4';
 
