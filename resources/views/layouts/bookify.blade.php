@@ -215,7 +215,6 @@
     <script src="{{ asset('bookify/js/jquery.js') }}"></script>
     <script src="{{ asset('bookify/js/moment.js') }}"></script>
     <script src="{{ asset('bookify/js/bootstrap.js') }}"></script>
-    <script async defer src="{{ asset('bookify/https://maps.googleapis.com/maps/api/js?key=AIzaSyDYeBBmgAkyAN_QKjAVOiP_kWZ_eQdadeI&amp;callback=initMap&amp;libraries=places') }}"></script>
     <script src="{{ asset('bookify/js/owl-carousel.js') }}"></script>
     <script src="{{ asset('bookify/js/blur-area.js') }}"></script>
     <script src="{{ asset('bookify/js/icheck.js') }}"></script>

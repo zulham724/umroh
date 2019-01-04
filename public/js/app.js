@@ -89538,8 +89538,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                 });
                             }
                         });
-                    }, function (err) {
-                        Swal.showValidationMessage("Request failed: " + error);
+                    }).catch(function (error) {
+                        Swal.showValidationMessage(
+                        // `Request failed: ${error}`
+                        'Harap mengisi isian penumpang');
                     });
                 },
                 allowOutsideClick: function allowOutsideClick() {
