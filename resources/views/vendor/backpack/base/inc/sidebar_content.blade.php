@@ -68,3 +68,6 @@
 {{-- <li><a href='{{ backpack_url('planhasvoucher') }}'><i class='fa fa-tag'></i> <span>Plan Has Vouchers</span></a></li> --}}
 {{-- <li><a href='{{ backpack_url('transactionhasstatus') }}'><i class='fa fa-tag'></i> <span>Transaction has statuses</span></a></li> --}}
 {{-- <li><a href='{{ backpack_url('orderhasstatus') }}'><i class='fa fa-tag'></i> <span>Order has statuses</span></a></li> --}}
+<li><a href='{{ backpack_url('orderhasperson') }}'><i class='fa fa-tag'></i> <span>Order Has Persons</span></a></li>
+<li><a href='{{ backpack_url('passport') }}'><i class='fa fa-tag'></i> <span>Passports</span></a></li>
+<li><a href='{{ backpack_url('personhaspassport') }}'><i class='fa fa-tag'></i> <span>Person Has Passports</span></a></li>

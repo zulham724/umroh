@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Backpack\CRUD\CrudTrait;
 
-class Person extends Model
+class OrderHasPerson extends Model
 {
     use CrudTrait;
 
@@ -15,7 +15,7 @@ class Person extends Model
     |--------------------------------------------------------------------------
     */
 
-    protected $table = 'persons';
+    protected $table = 'order_has_persons';
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
@@ -34,9 +34,7 @@ class Person extends Model
     | RELATIONS
     |--------------------------------------------------------------------------
     */
-    public function order(){
-        return $this->belongsToMany('App\Models\Order','order_has_persons','order_id','person_id');
-    }
+
     /*
     |--------------------------------------------------------------------------
     | SCOPES

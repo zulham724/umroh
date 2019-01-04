@@ -1,9 +1,10 @@
 <template>
-  <!-- <form enctype="multipart/form-data" @submit="submitForm" method="post"> -->
+  
+  <form enctype="multipart/form-data" @submit.prevent="submitForm" method="post">
     
 
     <div class="theme-page-section theme-page-section-lg">
-    <input type="hidden" v-model="order.plan_id" name="order[plan_id]">
+      <input type="hidden" v-model="order.plan_id" name="order[plan_id]">
       <div class="container">
         <div class="row row-col-static row-col-mob-gap" id="sticky-parent" data-gutter="60">
           <div class="col-md-8 ">
@@ -150,7 +151,7 @@
                       <div class="col-md-6 ">
                         <div class="theme-payment-page-form-item form-group">
                           <i class="fa fa-angle-down"></i>
-                          <select class="form-control" v-model="order.persons[p].gender" :name="'order[persons]['+p+'][gender]'">
+                          <select class="form-control" v-model="order.persons[p].gender" :name="'order[persons]['+p+'][gender]'" required>
                             <option value="">Gender</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
@@ -202,12 +203,12 @@
                           <input class="form-control" type="text" placeholder="Pekerjaan" v-model="order.persons[p].profession" value="JOB" :name="'order[persons]['+p+'][profession]'" required />
                         </div>
                       </div>
-                      <div class="col-md-6 ">
+                      <!-- <div class="col-md-6 ">
                         <div class="theme-payment-page-form-item form-group">
                           <label>Foto KTP</label>
                           <input class="form-control" type="file" placeholder="Foto KTP" :name="'order[persons]['+p+'][identity_image]'" />
                         </div>
-                      </div>
+                      </div> -->
                     </div>
                     <div v-if="person.passport">
                       <hr>
@@ -252,7 +253,7 @@
                     <p class="theme-payment-page-booking-subtitle">By clicking book now button you agree with terms and conditionals and money back gurantee. Thank you for trusting our service.</p>
                     <p class="theme-payment-page-booking-price">Rp {{ (((plan.price - ((plan.price*plan.discount)/100))*order.persons.length) - (voucher ? voucher.value : 0)).toLocaleString() }}</p>
                   </div>
-                  <button class="btn _tt-uc btn-primary-inverse btn-lg btn-block" @click="submitForm()">Book Now</button>
+                  <button class="btn _tt-uc btn-primary-inverse btn-lg btn-block" type="submit">Book Now</button>
                 </div>
               </div>
             </div>
@@ -321,7 +322,8 @@
         </div>
       </div>
     </div>
-  <!-- </form> -->
+
+  </form>
 </template>
 
 <script>
@@ -408,36 +410,56 @@
               this.dp == 'true' ? access.dp = this.dp : delete access.dp;
               this.voucher != null ? access.voucher = this.voucher : delete access.voucher;
 
-              axios.post("/payment/checkout",access).then(res=>{
+              Swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, Book it!',
+                showLoaderOnConfirm: true,
+                preConfirm: ()=> {
+                  return axios.post("/payment/checkout",access).then(res=>{
                 
-                snap.pay(res.data.snap_token, {
-                    // Optional
-                    onSuccess: function (result) {
-                        Swal({
-                          title: 'Success!',
-                          text: 'Pembayaran Anda Berhasil',
-                          type: 'info',
-                          showConfirmButton: false,
-                          timer: 3500
-                        });
-                    },
-                    // Optional
-                    onPending: function (result) {
-                        window.location.replace('/payment/success/'+res.data.order.id);
-                    },
-                    // Optional
-                    onError: function (result) {
-                        Swal({
-                          title: 'Oppss!',
-                          text: 'Terjadi Kesalahan',
-                          type: 'error',
-                          showConfirmButton: false,
-                          timer: 1500
-                        });
-                    }
-                });
+                    snap.pay(res.data.snap_token, {
+                        // Optional
+                        onSuccess: function (result) {
+                            Swal({
+                              title: 'Success!',
+                              text: 'Pembayaran Anda Berhasil',
+                              type: 'info',
+                              showConfirmButton: false,
+                              timer: 3500
+                            });
+                        },
+                        // Optional
+                        onPending: function (result) {
+                            window.location.replace('/payment/success/'+res.data.order.id);
+                        },
+                        // Optional
+                        onError: function (result) {
+                            Swal({
+                              title: 'Oppss!',
+                              text: 'Terjadi Kesalahan',
+                              type: 'error',
+                              showConfirmButton: false,
+                              timer: 1500
+                            });
+                        }
+                    });
 
+                  },err=>{
+                    Swal.showValidationMessage(
+                      `Request failed: ${error}`
+                    )
+                  });
+
+                },
+                allowOutsideClick: () => !Swal.isLoading()
               });
+
+              
             }
         }
     }

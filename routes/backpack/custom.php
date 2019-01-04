@@ -28,4 +28,7 @@ Route::group([
     CRUD::resource('orderstatus', 'OrderStatusCrudController');
     CRUD::resource('tag', 'TagCrudController');
     CRUD::resource('orderhasstatus', 'OrderHasStatusCrudController');
+    CRUD::resource('orderhasperson', 'OrderHasPersonCrudController');
+    CRUD::resource('passport', 'PassportCrudController');
+    CRUD::resource('personhaspassport', 'PersonHasPassportCrudController');
 }); // this should be the absolute last line of this file

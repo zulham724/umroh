@@ -17,6 +17,9 @@ use App\Models\Transaction;
 use App\Models\Voucher;
 use App\Models\TransactionHasStatus;
 use App\Models\OrderHasStatus;
+use App\Models\OrderHasPerson;
+use App\Models\Passport;
+use App\Models\PersonHasPassport;
 
 class PaymentController extends Controller
 {
@@ -194,6 +197,31 @@ class PaymentController extends Controller
         $transaction_has_status->transaction_id = $transaction->id;
         $transaction_has_status->transaction_status_id = 1;
         $transaction_has_status->save();
+
+        if (isset($request['order']['persons'])) {
+            foreach ($request['order']['persons'] as $p => $people) {
+                $person = new Person;
+                $collection = collect($people);
+                $filtered = $collection->except(['passport']);
+                $person->fill($filtered->all());
+                $person->save();
+
+                $order_has_person = new OrderHasPerson;
+                $order_has_person->order_id = $order->id;
+                $order_has_person->person_id = $person;
+
+                if (isset($people['passport'])) {
+                    $passport = new Passport;
+                    $passport->fill($people['passport']);
+                    $passport->save();
+
+                    $person_has_passport = new PersonHasPassport;
+                    $person_has_passport->person_id = $person->id;
+                    $person_has_passport->passport_id = $passport->id;
+                    $person_has_passport->save();
+                }
+            }
+        }
 
         $payload = [
             'transaction_details' => [
