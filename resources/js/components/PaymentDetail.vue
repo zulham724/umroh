@@ -451,8 +451,8 @@
 
                   }).catch(error=>{
                     Swal.showValidationMessage(
-                      // `Request failed: ${error}`
-                      'Harap mengisi isian penumpang'
+                      `Request failed: ${error}`
+                      // 'Terjadi Kesalahan'
                     )
                   });
 
