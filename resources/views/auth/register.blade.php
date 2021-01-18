@@ -41,7 +41,10 @@
                       @endif
                     </div>
                     <div class="form-group theme-login-form-group">
-                      <input id="password-confirm" type="password" placeholder="Password" class="form-control" name="password_confirmation" required>
+                        <input id="password-confirm" type="password" placeholder="Password" class="form-control" name="password" required>
+                      </div>
+                    <div class="form-group theme-login-form-group">
+                      <input id="password-confirm" type="password" placeholder="Password Confirmation" class="form-control" name="password_confirmation" required>
                     </div>
                     <button class="btn btn-uc btn-dark btn-block btn-lg" type="submit">Create Account</button>
                   </form>
